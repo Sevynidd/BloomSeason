@@ -1,0 +1,629 @@
+<!doctype html>
+<html lang="de" data-theme="dark" data-season="spring">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BloomSeason Saisonlicht</title>
+<!--
+  BloomSeason · Designvorschlag "Saisonlicht" (design-opus)
+  Self-contained: keine externen Ressourcen, keine Schriften aus dem Netz.
+  Alle Werte sind erfundene Beispieldaten. Masse in den Phone-Frames: 1 px = 1 dp (Frame 360 x 800 dp).
+-->
+<style>
+  /* ---------- Neutrale Tokens: Dunkel (Standard) ---------- */
+  :root {
+    --page: #0A0908; --bg: #121110; --card: #1F1D1B; --hi: #2C2926; --nav: #1A1917;
+    --ink: #ECE7E1; --muted: #B5ADA4; --outline: #8C847B; --divider: #34302C; --bar: #4A453F;
+    --frame: #2A2724; --shadow: 0 24px 60px rgba(0,0,0,.55);
+
+    /* Jahreszeiten: Akzent, Text auf Akzent, Container, Text auf Container */
+    --win: #A9C4E6; --win-on: #0E1D30; --win-c: #23324A; --win-onc: #D6E3F7;
+    --spr: #A6D49B; --spr-on: #0F2410; --spr-c: #24392A; --spr-onc: #CDEBC4;
+    --sum: #E8C677; --sum-on: #2A1E04; --sum-c: #3E3119; --sum-onc: #F6E2B4;
+    --aut: #EBA484; --aut-on: #33150A; --aut-c: #47291C; --aut-onc: #F8D5C5;
+
+    --font: "Roboto Flex", Roboto, system-ui, -apple-system, "Segoe UI", sans-serif;
+    color-scheme: dark;
+  }
+  /* ---------- Neutrale Tokens: Hell ---------- */
+  :root[data-theme="light"] {
+    --page: #E4DED6; --bg: #F5F1EB; --card: #FFFFFF; --hi: #EFE9E1; --nav: #ECE6DE;
+    --ink: #1E1B18; --muted: #5C554E; --outline: #7D746B; --divider: #E2DBD2; --bar: #D3CABF;
+    --frame: #CFC7BD; --shadow: 0 24px 60px rgba(60,40,20,.16);
+
+    --win: #3B5F8C; --win-on: #FFFFFF; --win-c: #D8E4F3; --win-onc: #142D4A;
+    --spr: #3D6A3A; --spr-on: #FFFFFF; --spr-c: #D6EACD; --spr-onc: #11290F;
+    --sum: #7A5B0F; --sum-on: #FFFFFF; --sum-c: #F4E3B8; --sum-onc: #2E2100;
+    --aut: #9B4A28; --aut-on: #FFFFFF; --aut-c: #F0DDCC; --aut-onc: #3A1406;
+    color-scheme: light;
+  }
+  /* ---------- Aktuelle Jahreszeit = Primary / PrimaryContainer ---------- */
+  :root[data-season="winter"] { --acc: var(--win); --on-acc: var(--win-on); --accc: var(--win-c); --on-accc: var(--win-onc); }
+  :root[data-season="spring"] { --acc: var(--spr); --on-acc: var(--spr-on); --accc: var(--spr-c); --on-accc: var(--spr-onc); }
+  :root[data-season="summer"] { --acc: var(--sum); --on-acc: var(--sum-on); --accc: var(--sum-c); --on-accc: var(--sum-onc); }
+  :root[data-season="autumn"] { --acc: var(--aut); --on-acc: var(--aut-on); --accc: var(--aut-c); --on-accc: var(--aut-onc); }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: var(--page); color: var(--ink); font: 14px/20px var(--font); padding: 32px 16px 64px; -webkit-font-smoothing: antialiased; transition: background .3s; }
+  .num { font-variant-numeric: tabular-nums; }
+
+  /* ---------- Seitenkopf (nicht Teil der App) ---------- */
+  .page-head { max-width: 1240px; margin: 0 auto 20px; display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: flex-end; justify-content: space-between; }
+  .page-head h1 { margin: 0; font-size: 28px; line-height: 36px; font-weight: 500; letter-spacing: -.3px; }
+  .page-head p { margin: 4px 0 0; color: var(--muted); }
+  .controls { display: flex; flex-wrap: wrap; gap: 12px; }
+  .seg { display: inline-flex; border: 1px solid var(--outline); border-radius: 999px; overflow: hidden; }
+  .seg button { font: 500 14px/20px var(--font); color: var(--ink); background: none; border: 0; padding: 8px 16px; min-height: 40px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+  .seg button + button { border-left: 1px solid var(--outline); }
+  .seg button[aria-pressed="true"] { background: var(--accc); color: var(--on-accc); }
+  .seg svg { width: 18px; height: 18px; }
+  :focus-visible { outline: 3px solid var(--acc); outline-offset: 2px; }
+
+  .decisions { max-width: 1240px; margin: 0 auto 36px; background: var(--card); border-radius: 28px; padding: 24px 28px; }
+  .decisions h2 { margin: 0 0 12px; font-size: 22px; line-height: 28px; font-weight: 500; }
+  .decisions ul { margin: 0; padding-left: 20px; display: grid; gap: 10px; }
+  .decisions li { color: var(--ink); }
+  .decisions li b { font-weight: 600; }
+  .decisions .m { color: var(--muted); }
+  .pal { border-collapse: collapse; margin: 8px 0 4px; font-size: 12.5px; line-height: 16px; }
+  .pal th, .pal td { padding: 4px 10px 4px 0; text-align: left; white-space: nowrap; }
+  .pal th { color: var(--muted); font-weight: 500; }
+  .sw { display: inline-block; width: 14px; height: 14px; border-radius: 4px; vertical-align: -3px; margin-right: 6px; border: 1px solid rgba(128,128,128,.35); }
+  .pal-wrap { overflow-x: auto; }
+
+  /* ---------- Phone-Raster ---------- */
+  .grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 40px 32px; max-width: 1240px; margin: 0 auto; }
+  figure { margin: 0; }
+  figcaption { margin: 0 0 12px 8px; font-weight: 500; font-size: 16px; line-height: 24px; }
+  figcaption small { display: block; font-weight: 400; font-size: 12px; line-height: 16px; color: var(--muted); max-width: 340px; }
+
+  .phone { width: 360px; height: 800px; background: var(--bg); border-radius: 44px; border: 1px solid var(--frame); box-shadow: var(--shadow); overflow: hidden; display: flex; flex-direction: column; position: relative; transition: background .3s; }
+  @media (max-width: 400px) { .phone { width: 100%; max-width: 360px; height: 830px; } }
+  .status { height: 32px; flex: none; display: flex; align-items: center; justify-content: space-between; padding: 6px 24px 0; font-size: 12px; font-weight: 500; color: var(--ink); }
+  .status .icons { display: flex; gap: 5px; align-items: center; }
+  .status svg { width: 15px; height: 15px; }
+  .screen { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 0 16px 16px; gap: 12px; overflow: hidden; }
+
+  .appbar { height: 64px; flex: none; display: flex; align-items: center; justify-content: space-between; padding: 0 4px 0 20px; }
+  .appbar h3 { margin: 0; font-size: 22px; line-height: 28px; font-weight: 500; letter-spacing: -.1px; }
+  .appbar .sub { font-size: 14px; line-height: 20px; color: var(--muted); font-weight: 500; }
+  .ibtn { width: 48px; height: 48px; display: grid; place-items: center; border-radius: 50%; color: var(--ink); }
+  .ibtn svg { width: 24px; height: 24px; }
+
+  svg.ic { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+  /* Navigation: M3 NavigationBar, nur Icons */
+  .nav { flex: none; height: 80px; background: var(--nav); display: flex; align-items: center; justify-content: space-around; padding: 0 8px 4px; }
+  .nav span { width: 64px; height: 32px; border-radius: 16px; display: grid; place-items: center; color: var(--muted); }
+  .nav span.on { background: var(--accc); color: var(--on-accc); }
+  .nav svg { width: 24px; height: 24px; }
+
+  /* Bausteine */
+  .card { background: var(--card); border-radius: 24px; padding: 16px; }
+  .label-l { font-size: 14px; line-height: 20px; font-weight: 500; }
+  .label-m { font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: .3px; }
+  .body-m { font-size: 14px; line-height: 20px; }
+  .body-s { font-size: 12px; line-height: 16px; }
+  .muted { color: var(--muted); }
+  .title-m { font-size: 16px; line-height: 24px; font-weight: 500; }
+  .headline-s { font-size: 24px; line-height: 32px; font-weight: 500; letter-spacing: -.2px; }
+  .section { font-size: 14px; line-height: 20px; font-weight: 500; color: var(--muted); margin: 4px 4px -4px; }
+
+  .btn { height: 56px; border-radius: 28px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 16px; line-height: 24px; font-weight: 500; }
+  .btn svg { width: 22px; height: 22px; }
+  .btn.filled { background: var(--acc); color: var(--on-acc); }
+  .btn.tonal { background: var(--hi); color: var(--ink); height: 48px; font-size: 14px; border-radius: 24px; }
+  .btn.outline { border: 1px solid var(--outline); color: var(--ink); height: 48px; font-size: 14px; }
+  .spacer { flex: 1; }
+
+  .chip { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: 8px; border: 1px solid var(--outline); font-size: 14px; font-weight: 500; color: var(--ink); }
+  .chip svg { width: 18px; height: 18px; }
+  .chip.sel { background: var(--accc); color: var(--on-accc); border-color: transparent; }
+
+  /* ---------- 1 Heute ---------- */
+  .hero { position: relative; background: var(--accc); color: var(--on-accc); border-radius: 32px 32px 32px 12px; padding: 20px 20px 18px; overflow: hidden; min-height: 222px; transition: background .3s; }
+  .hero .art { position: absolute; right: -28px; top: -28px; width: 190px; height: 190px; color: var(--on-accc); opacity: .9; }
+  .hero .art .rings circle { fill: none; stroke: currentColor; stroke-width: 1; opacity: .18; }
+  .hero .art .glyph { fill: none; stroke: var(--acc); stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+  .hero .day { position: relative; }
+  .hero .name { position: relative; font-size: 45px; line-height: 52px; font-weight: 500; letter-spacing: -.8px; margin: 52px 0 2px; }
+  .hero .words { position: relative; font-size: 16px; line-height: 24px; }
+  .hero .phase { position: relative; margin-top: 14px; display: inline-flex; align-items: center; height: 28px; padding: 0 12px; border-radius: 14px; border: 1px solid currentColor; font-size: 12px; font-weight: 500; letter-spacing: .3px; }
+
+  .lauf { position: relative; height: 54px; margin: 6px 2px 0; }
+  .lauf .seg-b { position: absolute; top: 26px; height: 10px; border-radius: 5px; }
+  .lauf .tail { position: absolute; top: 30px; height: 2px; border-top: 2px dotted var(--outline); }
+  .lauf .win { position: absolute; top: 6px; height: 14px; border: 1.5px dashed var(--win); border-bottom: 0; border-radius: 6px 6px 0 0; }
+  .lauf .win-l { position: absolute; top: -4px; font-size: 11px; line-height: 14px; color: var(--muted); font-weight: 500; white-space: nowrap; transform: translateX(-100%); }
+  .lauf .mark { position: absolute; top: 18px; width: 6px; height: 26px; margin-left: -3px; border-radius: 3px; background: var(--ink); box-shadow: 0 0 0 3px var(--card); transition: left .4s; }
+  .lauf .ax { position: absolute; top: 42px; font-size: 11px; line-height: 12px; color: var(--muted); }
+  .next-big { font-size: 28px; line-height: 36px; font-weight: 500; letter-spacing: -.3px; margin-top: 2px; }
+  .conf { display: flex; align-items: center; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--divider); }
+  .meter { display: inline-flex; gap: 3px; align-items: flex-end; }
+  .meter i { width: 4px; border-radius: 2px; background: var(--acc); }
+  .meter i.off { background: var(--bar); }
+
+  /* ---------- 2 Kalender ---------- */
+  .cal { display: grid; grid-template-columns: repeat(7, 1fr); row-gap: 2px; text-align: center; }
+  .cal .wd { font-size: 12px; line-height: 16px; font-weight: 500; color: var(--muted); padding: 4px 0 8px; }
+  .cal .d { position: relative; height: 48px; }
+  .cal .d .pill { position: absolute; top: 4px; left: -1px; right: -1px; height: 36px; }
+  .cal .d .n { position: relative; z-index: 1; display: grid; place-items: center; width: 36px; height: 36px; margin: 4px auto 0; border-radius: 50%; font-size: 14px; font-weight: 500; }
+  .cal .d.out .n { color: var(--muted); font-weight: 400; }
+  .cal .d.per .pill { background: var(--win); }
+  .cal .d.per .n { color: var(--win-on); }
+  .cal .d.sum .pill { background: var(--sum-c); }
+  .cal .d.sum .n { color: var(--sum-onc); }
+  .cal .d.rs .pill { left: 6px; border-radius: 18px 0 0 18px; }
+  .cal .d.re .pill { right: 6px; border-radius: 0 18px 18px 0; }
+  .cal .d.rs.re .pill { border-radius: 18px; }
+  .cal .d.pred .n { border: 1.5px dashed var(--win); }
+  .cal .d.today .n { box-shadow: inset 0 0 0 2px var(--ink); }
+  .cal .d.sel .n { background: var(--ink); color: var(--bg); box-shadow: none; }
+  .cal .d .pain { position: absolute; z-index: 2; left: 50%; top: 27px; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: currentColor; }
+  .cal .d .ph { position: absolute; left: 0; right: 0; bottom: 2px; height: 3px; }
+  .cal .d .ph.fut { opacity: .45; }
+  .cal .d .ph.f { border-radius: 2px 0 0 2px; margin-left: 3px; }
+  .cal .d .ph.l { border-radius: 0 2px 2px 0; margin-right: 3px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 12px; line-height: 16px; color: var(--muted); padding: 0 4px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend s { display: inline-block; width: 14px; height: 14px; border-radius: 50%; text-decoration: none; }
+  .legend s.line { width: 18px; height: 3px; border-radius: 2px; background: linear-gradient(90deg, var(--win) 0 25%, var(--spr) 25% 50%, var(--sum) 50% 75%, var(--aut) 75%); }
+  .daysheet { background: var(--card); border-radius: 28px; padding: 8px 16px 16px; }
+  .handle { width: 32px; height: 4px; border-radius: 2px; background: var(--outline); margin: 0 auto 12px; opacity: .6; }
+  .row { display: flex; align-items: center; gap: 14px; min-height: 48px; border-top: 1px solid var(--divider); }
+  .row svg { width: 22px; height: 22px; color: var(--muted); flex: none; }
+  .row .grow { flex: 1; }
+  .tag { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px 0 8px; border-radius: 14px; background: var(--accc); color: var(--on-accc); font-size: 12px; font-weight: 500; }
+  .tag svg { width: 16px; height: 16px; }
+  .tag.spr { background: var(--spr-c); color: var(--spr-onc); } /* Tag eines konkreten Datums: feste Datenfarbe seiner Jahreszeit */
+
+  /* ---------- 3 Tag eintragen ---------- */
+  .ctx { display: inline-flex; align-self: flex-start; margin: -4px 4px 0; }
+  .flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .flow div { height: 84px; border-radius: 16px; background: var(--card); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; font-size: 12px; font-weight: 500; color: var(--ink); border: 1px solid transparent; }
+  .flow div.sel { background: var(--accc); color: var(--on-accc); border-color: var(--acc); }
+  .flow svg { width: 28px; height: 28px; }
+  .drop-o { fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; }
+  .drop-f { fill: currentColor; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .slider-card { padding: 16px 16px 14px; }
+  .sv { display: flex; align-items: baseline; justify-content: space-between; }
+  .sv .val { font-size: 36px; line-height: 44px; font-weight: 500; letter-spacing: -.4px; }
+  .slider { position: relative; height: 44px; margin: 10px 0 4px; }
+  .slider .act { position: absolute; left: 0; top: 14px; height: 16px; border-radius: 8px 2px 2px 8px; background: var(--acc); }
+  .slider .ina { position: absolute; right: 0; top: 14px; height: 16px; border-radius: 2px 8px 8px 2px; background: var(--accc); }
+  .slider .th { position: absolute; top: 0; width: 4px; height: 44px; border-radius: 2px; background: var(--acc); margin-left: -2px; }
+  .slider .tick { position: absolute; top: 20px; width: 4px; height: 4px; border-radius: 50%; margin-left: -2px; }
+  .slider .tick.a { background: var(--on-acc); opacity: .7; }
+  .slider .tick.i { background: var(--on-accc); opacity: .7; }
+  .scale { display: flex; justify-content: space-between; font-size: 12px; line-height: 16px; color: var(--muted); }
+
+  /* ---------- 4 Statistik ---------- */
+  .kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .kpi .v { font-size: 36px; line-height: 44px; font-weight: 500; letter-spacing: -.5px; }
+  .kpi .v small { font-size: 16px; font-weight: 500; letter-spacing: 0; color: var(--muted); margin-left: 4px; }
+  .kpi .pm { display: inline-block; margin-top: 6px; font-size: 12px; font-weight: 500; padding: 2px 8px; border-radius: 8px; background: var(--hi); color: var(--ink); }
+  .chart text { font: 500 11px var(--font); fill: var(--muted); }
+  .chart text.v { fill: var(--ink); font-size: 12px; }
+  .chart .band { fill: var(--accc); }
+  .chart .mean { stroke: var(--acc); stroke-width: 1.5; stroke-dasharray: 4 4; }
+  .chart .b { fill: var(--bar); }
+  .chart .b.cur { fill: var(--acc); }
+  .pr { display: grid; grid-template-columns: 20px 64px 1fr 30px; align-items: center; gap: 8px; min-height: 32px; }
+  .pr svg { width: 20px; height: 20px; }
+  .pr .tr { height: 10px; border-radius: 5px; background: var(--hi); overflow: hidden; }
+  .pr .tr i { display: block; height: 100%; border-radius: 5px; }
+  .pr b { font-weight: 500; text-align: right; }
+
+  /* ---------- 5 Einstellungen ---------- */
+  .group { background: var(--card); border-radius: 24px; padding: 4px 0; }
+  .li { display: flex; align-items: center; gap: 16px; min-height: 56px; padding: 6px 16px; }
+  .li + .li { border-top: 1px solid var(--divider); }
+  .li > svg { width: 24px; height: 24px; color: var(--muted); flex: none; }
+  .li .t { flex: 1; font-size: 16px; line-height: 22px; }
+  .li .t small { display: block; font-size: 12px; line-height: 16px; color: var(--muted); }
+  .li .chev { width: 20px; height: 20px; color: var(--muted); }
+  .sw-m3 { flex: none; width: 52px; height: 32px; border-radius: 16px; border: 2px solid var(--outline); background: var(--hi); position: relative; }
+  .sw-m3::after { content: ""; position: absolute; top: 6px; left: 6px; width: 16px; height: 16px; border-radius: 50%; background: var(--outline); }
+  .sw-m3.on { background: var(--acc); border-color: var(--acc); }
+  .sw-m3.on::after { top: 2px; left: 22px; width: 24px; height: 24px; background: var(--on-acc); }
+  .foot { text-align: center; font-size: 12px; line-height: 16px; color: var(--muted); display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .foot svg { width: 14px; height: 14px; }
+
+  .note { max-width: 860px; margin: 40px auto 0; color: var(--muted); }
+  .note b { color: var(--ink); font-weight: 600; }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<!-- Icons (Outline, 24 dp, 1.8 dp Strich; in Compose als ImageVector) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="g-winter" viewBox="0 0 24 24"><path d="M12 3v18M4.2 7.5l15.6 9M4.2 16.5l15.6-9M9.6 4.6 12 7l2.4-2.4M9.6 19.4 12 17l2.4 2.4M4.9 10.6l3.3-.9-.9-3.3M19.1 13.4l-3.3.9.9 3.3M4.9 13.4l3.3.9-.9 3.3M19.1 10.6l-3.3-.9.9-3.3"/></symbol>
+  <symbol id="g-spring" viewBox="0 0 24 24"><path d="M12 21v-9M12 13C8 13 5 10.5 5 6.5c4 0 7 2.5 7 6.5zM12 10.5c0-3.6 2.6-6 6.5-6 0 3.6-2.6 6-6.5 6zM7 21h10"/></symbol>
+  <symbol id="g-summer" viewBox="0 0 24 24"><circle cx="12" cy="13" r="4"/><path d="M12 4.5v2M5.8 7l1.4 1.4M18.2 7l-1.4 1.4M3.5 13h2M18.5 13h2M3 19.5h18"/></symbol>
+  <symbol id="g-autumn" viewBox="0 0 24 24"><path d="M5 19C5 10.5 10.5 5 19 5c0 8.5-5.5 14-14 14zM5 19l9-9M3 21l2-2M9.5 14.5h3.5M12 12V8.8"/></symbol>
+
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1h-4.5v-5.5h-5V20H5a1 1 0 0 1-1-1z"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3.5"/><path d="M8.5 3v4M15.5 3v4M4 10h16"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M5 20v-7M12 20V5M19 20v-10"/></symbol>
+  <symbol id="i-tune" viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></symbol>
+
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-drop" viewBox="0 0 24 24"><path d="M12 3.5c3.2 4 6 7.3 6 10.5a6 6 0 0 1-12 0c0-3.2 2.8-6.5 6-10.5z"/></symbol>
+  <symbol id="i-pain" viewBox="0 0 24 24"><path d="M13 3 6 13.5h5L10 21l8-11h-5.2z"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15zM10 20.5h4"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7.5V12l3 2"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M3 12s3.3-6 9-6 9 6 9 6-3.3 6-9 6-9-6-9-6z"/><path d="M4 4l16 16"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3.5 7.5a2 2 0 0 1 2-2H10l2 2.5h6.5a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/></symbol>
+  <symbol id="i-save" viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19.5h14"/></symbol>
+  <symbol id="i-restore" viewBox="0 0 24 24"><path d="M12 15V4M7.5 8.5 12 4l4.5 4.5M5 19.5h14"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M7 3.5h7l4 4V20a.5.5 0 0 1-.5.5h-10.5A.5.5 0 0 1 6.5 20V4a.5.5 0 0 1 .5-.5zM14 3.5V8h4M9.5 13h5M9.5 16.5h5"/></symbol>
+  <symbol id="i-device" viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2.5"/><path d="M11 18h2"/></symbol>
+</svg>
+
+<header class="page-head">
+  <div>
+    <h1>BloomSeason · Saisonlicht</h1>
+    <p>Designvorschlag (Opus) auf Basis der Wireframes v0.2 · Android, Jetpack Compose / Material 3 · alle Werte sind erfundene Beispieldaten</p>
+  </div>
+  <div class="controls">
+    <div class="seg" role="group" aria-label="Darstellung">
+      <button type="button" data-theme-btn="dark" aria-pressed="true">Dunkel</button>
+      <button type="button" data-theme-btn="light" aria-pressed="false">Hell</button>
+    </div>
+    <div class="seg" role="group" aria-label="Vorschau Jahreszeit">
+      <button type="button" data-season-btn="winter" aria-pressed="false" title="Winter"><svg class="ic" aria-hidden="true"><use href="#g-winter"/></svg>Winter</button>
+      <button type="button" data-season-btn="spring" aria-pressed="true" title="Frühling"><svg class="ic" aria-hidden="true"><use href="#g-spring"/></svg>Frühling</button>
+      <button type="button" data-season-btn="summer" aria-pressed="false" title="Sommer"><svg class="ic" aria-hidden="true"><use href="#g-summer"/></svg>Sommer</button>
+      <button type="button" data-season-btn="autumn" aria-pressed="false" title="Herbst"><svg class="ic" aria-hidden="true"><use href="#g-autumn"/></svg>Herbst</button>
+    </div>
+  </div>
+</header>
+
+<section class="decisions" aria-labelledby="dec-h">
+  <h2 id="dec-h">Designentscheidungen</h2>
+  <ul>
+    <li><b>Leitidee „Saisonlicht“:</b> Die Oberfläche bleibt warm-neutral (Stein, Erde). Nur das Licht wechselt: Die aktuelle Jahreszeit liefert <i>Primary</i> und <i>PrimaryContainer</i>. Die vier Jahreszeitenfarben gibt es zusätzlich als feste <i>Datenfarben</i> (Kalender, Jahreslauf, Statistik), damit „Winter“ überall gleich aussieht.</li>
+    <li><b>Palette je Jahreszeit</b> <span class="m">(Akzent / Container; Text auf Akzent: dunkel = jeweiliger Dunkelton, hell = #FFFFFF)</span>
+      <div class="pal-wrap"><table class="pal">
+        <tr><th></th><th>Dunkel Akzent</th><th>Dunkel Container</th><th>Hell Akzent</th><th>Hell Container</th></tr>
+        <tr><td>Winter · Frostblau</td><td><span class="sw" style="background:#A9C4E6"></span>#A9C4E6</td><td><span class="sw" style="background:#23324A"></span>#23324A</td><td><span class="sw" style="background:#3B5F8C"></span>#3B5F8C</td><td><span class="sw" style="background:#D8E4F3"></span>#D8E4F3</td></tr>
+        <tr><td>Frühling · Salbei</td><td><span class="sw" style="background:#A6D49B"></span>#A6D49B</td><td><span class="sw" style="background:#24392A"></span>#24392A</td><td><span class="sw" style="background:#3D6A3A"></span>#3D6A3A</td><td><span class="sw" style="background:#D6EACD"></span>#D6EACD</td></tr>
+        <tr><td>Sommer · Weizen</td><td><span class="sw" style="background:#E8C677"></span>#E8C677</td><td><span class="sw" style="background:#3E3119"></span>#3E3119</td><td><span class="sw" style="background:#7A5B0F"></span>#7A5B0F</td><td><span class="sw" style="background:#F4E3B8"></span>#F4E3B8</td></tr>
+        <tr><td>Herbst · Terrakotta</td><td><span class="sw" style="background:#EBA484"></span>#EBA484</td><td><span class="sw" style="background:#47291C"></span>#47291C</td><td><span class="sw" style="background:#9B4A28"></span>#9B4A28</td><td><span class="sw" style="background:#F0DDCC"></span>#F0DDCC</td></tr>
+      </table></div>
+      <span class="m">Neutral dunkel: Hintergrund #121110, Karte #1F1D1B, Fläche hoch #2C2926, Text #ECE7E1, Nebentext #B5ADA4, Kontur #8C847B. Neutral hell: #F5F1EB, #FFFFFF, #EFE9E1, Text #1E1B18, Nebentext #5C554E, Kontur #7D746B.</span></li>
+    <li><b>Typografie:</b> Systemschrift Roboto (Android-Standard, kein Download), Material-3-Skala in sp: Display Medium 45/52 für den Jahreszeitennamen (Gewicht 500 statt 400 für mehr Präsenz), Headline 28/36 und 24/32, Title Large 22/28 für App-Bars, Title Medium 16/24, Body 14/20, Label 12/16. Zahlen mit Tabellenziffern (<code>fontFeatureSettings = "tnum"</code>).</li>
+    <li><b>Formensprache:</b> M3-Formskala, großzügig gerundet: Karten 24 dp, Sheets 28 dp, Buttons und Chips voll bzw. 8 dp. Einziges Signaturelement ist die „Kiesel“-Form der Heute-Karte (32/32/32/12 dp, <code>RoundedCornerShape</code>). Illustrationen sind feine Linien-Glyphen (Kristall, Keim, Sonne über Horizont, Blatt) statt Blumen oder Herzen.</li>
+    <li><b>Rolle des Akzents:</b> Er markiert nur das Wichtigste: primäre Aktion, aktiver Nav-Indikator, Auswahl, Schalter, aktueller Wert im Diagramm. Großflächig erscheint er nur gedämpft als Container (Heute-Karte). Text steht nie in Akzentfarbe auf Akzent, sondern immer als passendes „on“-Paar.</li>
+    <li><b>Barrierefreiheit (gemessen, WCAG 2.1):</b> Fließtext ≥ 11,7:1 (dunkel) bzw. ≥ 13,8:1 (hell), Nebentext ≥ 5,5:1, Akzent als Text oder Grafik auf allen Flächen ≥ 4,6:1, „on“-Paare ≥ 6,1:1, Konturen von Bedienelementen ≥ 3,7:1. Farbe trägt nie allein Bedeutung: Vorhersage ist gestrichelt, Jahreszeiten haben Glyphen und Namen. Touch-Ziele ≥ 48 dp, alle Icons der Navigation mit <code>contentDescription</code>, Schriften in sp skalieren mit.</li>
+    <li><b>Ehrliche Vorhersage als Gestaltungsprinzip:</b> Die nächste Periode erscheint als Zeitfenster („in 18–22 Tagen“) mit Sicherheitsanzeige, nicht als Einzeldatum. Zukünftige Phasen im Kalender sind blasser, Eisprung ist ein geschätztes Fenster (= Sommer, 3 Tage).</li>
+    <li><b>Compose-Umsetzung:</b> Acht <code>ColorScheme</code>s (4 Jahreszeiten × Dunkel/Hell), gewechselt über <code>MaterialTheme</code> je nach aktueller Phase, kein Dynamic Color. Bausteine: <code>NavigationBar</code> ohne Labels, <code>Card</code>, <code>FilterChip</code>, <code>SingleChoiceSegmentedButtonRow</code>, <code>Slider</code> (steps = 9), <code>ListItem</code> + <code>Switch</code>, <code>ModalBottomSheet</code>; Jahreslauf, Kalenderzellen und Diagramme als <code>Canvas</code>.</li>
+  </ul>
+</section>
+
+<main class="grid">
+
+<!-- ================= 1 HEUTE ================= -->
+<figure>
+  <figcaption>1 · Heute <small>Jahreszeit als Kiesel-Karte, Jahreslauf mit Vorhersagefenster, Schnell-Eintrag für Periodenbeginn</small></figcaption>
+  <div class="phone">
+    <div class="status"><span class="num">9:41</span><span class="icons" data-status></span></div>
+    <div class="appbar"><div><div class="sub" id="h-date">Mittwoch, 14. Oktober</div></div></div>
+    <div class="screen">
+      <div class="hero" aria-live="polite">
+        <svg class="art" viewBox="0 0 190 190" aria-hidden="true">
+          <g class="rings"><circle cx="95" cy="95" r="40"/><circle cx="95" cy="95" r="62"/><circle cx="95" cy="95" r="84"/></g>
+          <svg class="glyph" x="55" y="55" width="80" height="80" viewBox="0 0 24 24"><use id="h-glyph" href="#g-spring"/></svg>
+        </svg>
+        <div class="day label-l num" id="h-day">Zyklustag 9 von 28</div>
+        <div class="name" id="h-name">Frühling</div>
+        <div class="words" id="h-words">Aufbau · Energie kommt zurück</div>
+        <div class="phase" id="h-phase">Follikelphase</div>
+      </div>
+
+      <div class="card">
+        <div class="label-m muted" id="h-next-l">Nächste Periode</div>
+        <div class="next-big num" id="h-next">in 18–22 Tagen</div>
+        <div class="body-m muted" id="h-next-s">voraussichtlich 1.–5. November</div>
+        <div class="lauf" id="lauf" aria-label="Jahreslauf des aktuellen Zyklus" role="img"></div>
+        <div class="conf">
+          <span class="meter" aria-hidden="true"><i style="height:6px"></i><i style="height:10px"></i><i class="off" style="height:14px"></i></span>
+          <span class="body-s muted">recht sicher · aus 6 Zyklen, ± 1,6 Tage</span>
+        </div>
+      </div>
+
+      <div class="spacer"></div>
+      <div class="btn filled"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg>Heute eintragen</div>
+      <div class="btn outline" id="h-quick"><svg class="ic" aria-hidden="true" style="width:20px;height:20px"><use href="#i-drop"/></svg><span>Periode hat begonnen</span></div>
+    </div>
+    <nav class="nav" data-active="0"></nav>
+  </div>
+</figure>
+
+<!-- ================= 2 KALENDER ================= -->
+<figure>
+  <figcaption>2 · Kalender <small>Perioden als durchgehende Bänder, Jahreszeit als Linie unter jedem Tag, Zukunft blasser, Tagesdetails im Sheet</small></figcaption>
+  <div class="phone">
+    <div class="status"><span class="num">9:41</span><span class="icons" data-status></span></div>
+    <div class="appbar"><h3>Oktober 2026</h3><div style="display:flex"><span class="ibtn" aria-label="Vorheriger Monat"><svg class="ic"><use href="#i-left"/></svg></span><span class="ibtn" aria-label="Nächster Monat"><svg class="ic"><use href="#i-right"/></svg></span></div></div>
+    <div class="screen" style="gap:8px">
+      <div class="cal num" id="cal"></div>
+      <div class="legend">
+        <span><s style="background:var(--win)"></s>Periode</span>
+        <span><s style="border:1.5px dashed var(--win)"></s>erwartet</span>
+        <span><s style="background:var(--sum-c);border:1px solid var(--sum)"></s>Sommer · Eisprung geschätzt</span>
+        <span><s class="line"></s>Jahreszeit</span>
+        <span><s style="width:5px;height:5px;background:var(--ink)"></s>Schmerz notiert</span>
+      </div>
+      <div class="spacer"></div>
+      <div class="daysheet">
+        <div class="handle"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px">
+          <div class="title-m">Mittwoch, 14. Oktober</div>
+          <span class="tag spr"><svg class="ic" aria-hidden="true"><use href="#g-spring"/></svg>Frühling · Tag 9</span>
+        </div>
+        <div class="row"><svg class="ic" aria-hidden="true"><use href="#i-drop"/></svg><span class="grow">Blutung</span><span class="muted">keine</span></div>
+        <div class="row"><svg class="ic" aria-hidden="true"><use href="#i-pain"/></svg><span class="grow">Schmerzen</span><span class="num">Bauch · 4/10</span></div>
+        <div class="btn tonal" style="margin-top:8px"><svg class="ic" aria-hidden="true" style="width:18px;height:18px"><use href="#i-edit"/></svg>Tag bearbeiten</div>
+      </div>
+    </div>
+    <nav class="nav" data-active="1"></nav>
+  </div>
+</figure>
+
+<!-- ================= 3 TAG EINTRAGEN ================= -->
+<figure>
+  <figcaption>3 · Tag eintragen <small>Vollbild-Dialog: Blutung als Segmente mit Tropfen-Füllstand, Schmerzort als Chips, Stärke je Ort per Slider</small></figcaption>
+  <div class="phone">
+    <div class="status"><span class="num">9:41</span><span class="icons" data-status></span></div>
+    <div class="appbar" style="padding-left:4px"><div style="display:flex;align-items:center"><span class="ibtn" aria-label="Schließen"><svg class="ic"><use href="#i-close"/></svg></span><h3 style="margin-left:4px">Mi, 14. Oktober</h3></div></div>
+    <div class="screen" style="gap:12px">
+      <span class="tag ctx spr"><svg class="ic" aria-hidden="true"><use href="#g-spring"/></svg>Frühling · Zyklustag 9</span>
+
+      <div class="section">Blutung</div>
+      <div class="flow" role="radiogroup" aria-label="Blutungsstärke">
+        <div class="sel" role="radio" aria-checked="true"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-drop" class="drop-o"/><path d="M7.5 17.5 16.5 8.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>keine</div>
+        <div role="radio" aria-checked="false"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-drop" class="drop-o"/><circle class="drop-f" cx="12" cy="16" r="1.6"/></svg>Schmier</div>
+        <div role="radio" aria-checked="false"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><clipPath id="cl1"><rect x="0" y="15.5" width="24" height="9"/></clipPath></defs><use href="#i-drop" class="drop-f" clip-path="url(#cl1)"/><use href="#i-drop" class="drop-o"/></svg>leicht</div>
+        <div role="radio" aria-checked="false"><svg viewBox="0 0 24 24" aria-hidden="true"><defs><clipPath id="cl2"><rect x="0" y="11" width="24" height="13"/></clipPath></defs><use href="#i-drop" class="drop-f" clip-path="url(#cl2)"/><use href="#i-drop" class="drop-o"/></svg>mittel</div>
+        <div role="radio" aria-checked="false"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-drop" class="drop-f"/><use href="#i-drop" class="drop-o"/></svg>stark</div>
+      </div>
+
+      <div class="section" style="margin-top:6px">Schmerzen</div>
+      <div class="chips">
+        <span class="chip sel"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Bauch</span>
+        <span class="chip">Kopf</span>
+        <span class="chip">Rücken</span>
+        <span class="chip"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg>Ort</span>
+      </div>
+
+      <div class="card slider-card">
+        <div class="sv"><span class="label-l">Stärke · Bauch</span><span><span class="val num">4</span><span class="muted"> / 10</span></span></div>
+        <div class="slider" id="slider" role="slider" aria-label="Schmerzstärke Bauch" aria-valuemin="0" aria-valuemax="10" aria-valuenow="4"></div>
+        <div class="scale"><span>0 · keine</span><span>10 · sehr stark</span></div>
+      </div>
+      <div class="body-s muted" style="padding:0 4px">Jeder gewählte Ort bekommt eine eigene Stärke.</div>
+
+      <div class="spacer"></div>
+      <div class="btn filled"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Speichern</div>
+    </div>
+    <nav class="nav" data-active="1"></nav>
+  </div>
+</figure>
+
+<!-- ================= 4 STATISTIK ================= -->
+<figure>
+  <figcaption>4 · Statistik und Muster <small>Mittelwerte mit Streuung, Zykluslängen mit Normalbereich, Schmerzen je Jahreszeit</small></figcaption>
+  <div class="phone">
+    <div class="status"><span class="num">9:41</span><span class="icons" data-status></span></div>
+    <div class="appbar"><h3>Statistik</h3></div>
+    <div class="screen">
+      <div class="kpis num">
+        <div class="card kpi"><div class="label-m muted">Ø Zyklus</div><div class="v">28<small>Tage</small></div><span class="pm">± 1,6</span></div>
+        <div class="card kpi"><div class="label-m muted">Ø Periode</div><div class="v">5<small>Tage</small></div><span class="pm">± 0,6</span></div>
+      </div>
+
+      <div class="card" style="padding-bottom:8px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="title-m">Zykluslängen</span><span class="body-s muted">letzte 6</span></div>
+        <svg class="chart num" viewBox="0 0 296 150" width="100%" role="img" aria-label="Zykluslängen der letzten sechs Zyklen: April 27, Mai 31, Juni 28, Juli 29, August 26, September 28 Tage. Üblicher Bereich 26,6 bis 29,7 Tage.">
+          <rect class="band" x="0" y="39" width="296" height="34" rx="6"/>
+          <line class="mean" x1="0" y1="56" x2="296" y2="56"/>
+          <text x="294" y="34" text-anchor="end">Ø 28,2</text>
+          <rect class="b" x="20"  y="69" width="30" height="55" rx="8"/><text class="v" x="35"  y="63" text-anchor="middle">27</text>
+          <rect class="b" x="64"  y="25" width="30" height="99" rx="8"/><text class="v" x="79"  y="19" text-anchor="middle">31</text>
+          <rect class="b" x="108" y="58" width="30" height="66" rx="8"/><text class="v" x="123" y="52" text-anchor="middle">28</text>
+          <rect class="b" x="152" y="47" width="30" height="77" rx="8"/><text class="v" x="167" y="41" text-anchor="middle">29</text>
+          <rect class="b" x="196" y="80" width="30" height="44" rx="8"/><text class="v" x="211" y="74" text-anchor="middle">26</text>
+          <rect class="b cur" x="240" y="58" width="30" height="66" rx="8"/><text class="v" x="255" y="52" text-anchor="middle">28</text>
+          <text x="35" y="142" text-anchor="middle">Apr</text><text x="79" y="142" text-anchor="middle">Mai</text><text x="123" y="142" text-anchor="middle">Jun</text>
+          <text x="167" y="142" text-anchor="middle">Jul</text><text x="211" y="142" text-anchor="middle">Aug</text><text x="255" y="142" text-anchor="middle">Sep</text>
+        </svg>
+        <div class="body-s muted" style="display:flex;align-items:center;gap:6px"><span style="display:inline-block;width:14px;height:10px;border-radius:3px;background:var(--accc)"></span>üblicher Bereich</div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px"><span class="title-m">Schmerzen je Jahreszeit</span><span class="body-s muted">Ø Stärke</span></div>
+        <div class="pr num"><svg class="ic" style="color:var(--win)" aria-hidden="true"><use href="#g-winter"/></svg><span>Winter</span><span class="tr"><i style="width:61%;background:var(--win)"></i></span><b>6,1</b></div>
+        <div class="pr num"><svg class="ic" style="color:var(--spr)" aria-hidden="true"><use href="#g-spring"/></svg><span>Frühling</span><span class="tr"><i style="width:12%;background:var(--spr)"></i></span><b>1,2</b></div>
+        <div class="pr num"><svg class="ic" style="color:var(--sum)" aria-hidden="true"><use href="#g-summer"/></svg><span>Sommer</span><span class="tr"><i style="width:20%;background:var(--sum)"></i></span><b>2,0</b></div>
+        <div class="pr num"><svg class="ic" style="color:var(--aut)" aria-hidden="true"><use href="#g-autumn"/></svg><span>Herbst</span><span class="tr"><i style="width:34%;background:var(--aut)"></i></span><b>3,4</b></div>
+      </div>
+      <div class="foot">Aus 6 Zyklen · ein Muster, keine Diagnose</div>
+    </div>
+    <nav class="nav" data-active="2"></nav>
+  </div>
+</figure>
+
+<!-- ================= 5 EINSTELLUNGEN ================= -->
+<figure>
+  <figcaption>5 · Einstellungen <small>M3-Listen mit Leading-Icons, Schalter im Jahreszeitenakzent, Export und Backup gebündelt</small></figcaption>
+  <div class="phone">
+    <div class="status"><span class="num">9:41</span><span class="icons" data-status></span></div>
+    <div class="appbar"><h3>Einstellungen</h3></div>
+    <div class="screen" style="gap:6px">
+      <div class="section">Erinnerungen</div>
+      <div class="group">
+        <div class="li"><svg class="ic" aria-hidden="true"><use href="#i-bell"/></svg><span class="t">Periode erwartet<small>2 Tage vor dem Zeitfenster</small></span><span class="sw-m3 on" role="switch" aria-checked="true"></span></div>
+        <div class="li"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg><span class="t">Täglich eintragen<small class="num">21:00 Uhr</small></span><span class="sw-m3 on" role="switch" aria-checked="true"></span></div>
+        <div class="li"><svg class="ic" aria-hidden="true"><use href="#i-eye"/></svg><span class="t">Neutraler Text<small>„Zeit für deinen Eintrag“ statt „Periode“</small></span><span class="sw-m3" role="switch" aria-checked="false"></span></div>
+      </div>
+      <div class="section">Sicherheit</div>
+      <div class="group">
+        <div class="li"><svg class="ic" aria-hidden="true"><use href="#i-lock"/></svg><span class="t">App-Sperre<small>Biometrie oder PIN</small></span><span class="sw-m3 on" role="switch" aria-checked="true"></span></div>
+      </div>
+      <div class="section">Daten</div>
+      <div class="group">
+        <div class="li"><svg class="ic" aria-hidden="true"><use href="#i-folder"/></svg><span class="t">Backup-Ordner<small>Backups/BloomSeason</small></span><svg class="ic chev" aria-hidden="true"><use href="#i-right"/></svg></div>
+        <div class="li"><svg class="ic" aria-hidden="true"><use href="#i-save"/></svg><span class="t">Backup erstellen<small class="num">verschlüsselt · zuletzt gestern, 21:03</small></span><svg class="ic chev" aria-hidden="true"><use href="#i-right"/></svg></div>
+        <div class="li"><svg class="ic" aria-hidden="true"><use href="#i-restore"/></svg><span class="t">Backup einspielen</span><svg class="ic chev" aria-hidden="true"><use href="#i-right"/></svg></div>
+        <div class="li"><svg class="ic" aria-hidden="true"><use href="#i-file"/></svg><span class="t">Exportieren / Importieren<small>JSON oder CSV</small></span><svg class="ic chev" aria-hidden="true"><use href="#i-right"/></svg></div>
+      </div>
+      <div class="spacer"></div>
+      <div class="foot"><svg class="ic" aria-hidden="true"><use href="#i-device"/></svg>Alle Daten bleiben auf diesem Gerät.</div>
+    </div>
+    <nav class="nav" data-active="3"></nav>
+  </div>
+</figure>
+
+</main>
+
+<p class="note"><b>Hinweise zum Vorschlag.</b> Der Umschalter „Vorschau Jahreszeit“ gehört nicht zur App, er zeigt nur, wie dieselben Screens im Winter, Sommer oder Herbst wirken. Die Heute-Karte springt dabei auf einen passenden Beispieltag, die übrigen Screens behalten ihre Daten vom 14. Oktober. Beantwortete Fragen aus v0.2: Eisprung erscheint als geschätztes 3-Tage-Fenster (Sommer), der neutrale Erinnerungstext lautet als Vorschlag „Zeit für deinen Eintrag“. Die Navigation hat bewusst vier Ziele; „Tag eintragen“ öffnet sich als Vollbild-Dialog aus Heute oder dem Kalender.</p>
+
+<script>
+(function () {
+  var root = document.documentElement;
+
+  // Statusleiste
+  var statusHtml = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M2 20h3v-4H2zm5 0h3v-8H7zm5 0h3V8h-3zm5 0h3V4h-3z"/></svg>' +
+                   '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="18" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="4" y="9" width="14" height="6" rx="1" fill="currentColor"/><rect x="21" y="10" width="1.6" height="4" rx=".8" fill="currentColor"/></svg>';
+  document.querySelectorAll('[data-status]').forEach(function (el) { el.innerHTML = statusHtml; });
+
+  // Navigation: nur Icons, Beschriftung nur für Screenreader
+  var tabs = [['i-home', 'Heute'], ['i-cal', 'Kalender'], ['i-chart', 'Statistik'], ['i-tune', 'Einstellungen']];
+  document.querySelectorAll('.nav').forEach(function (nav) {
+    var active = +nav.dataset.active;
+    nav.setAttribute('aria-label', 'Hauptnavigation');
+    nav.innerHTML = tabs.map(function (t, i) {
+      return '<span class="' + (i === active ? 'on' : '') + '" role="link" aria-label="' + t[1] + '"' + (i === active ? ' aria-current="page"' : '') +
+             ' title="' + t[1] + '"><svg class="ic"><use href="#' + t[0] + '"/></svg></span>';
+    }).join('');
+  });
+
+  // Jahreslauf: Achse 31 Tage, Zyklus 28 Tage (Winter 5, Frühling 8, Sommer 3, Herbst 12), Vorhersagefenster Tag 27–31
+  var AX = 31, GAP = 0.35;
+  function pct(d) { return (d / AX * 100).toFixed(2) + '%'; }
+  function renderLauf(day) {
+    var segs = [[0, 5, '--win'], [5, 13, '--spr'], [13, 16, '--sum'], [16, 28, '--aut']];
+    var h = '';
+    segs.forEach(function (s) {
+      h += '<div class="seg-b" style="left:calc(' + pct(s[0]) + ' + ' + (s[0] ? GAP * 6 : 0) + 'px);width:calc(' + pct(s[1] - s[0]) + ' - ' + (s[0] ? GAP * 6 : 0) + 'px);background:var(' + s[2] + ')"></div>';
+    });
+    h += '<div class="tail" style="left:calc(' + pct(28) + ' + 3px);right:0"></div>';
+    h += '<div class="win" style="left:' + pct(26) + ';right:0"></div>';
+    h += '<div class="win-l" style="left:' + pct(26) + ';margin-left:-6px">Periode erwartet</div>';
+    h += '<div class="ax" style="left:0">Tag 1</div><div class="ax num" style="left:' + pct(28) + ';transform:translateX(-100%)">28</div>';
+    h += '<div class="mark" style="left:' + pct(day - 0.5) + '"></div>';
+    var el = document.getElementById('lauf');
+    el.innerHTML = h;
+  }
+
+  // Heute: Beispieltage je Jahreszeit (nur Vorschau)
+  var HEUTE = {
+    winter: { date: 'Donnerstag, 8. Oktober', day: 3, name: 'Winter', phase: 'Menstruation', words: 'Rückzug · Ruhe · Erholung',
+              nl: 'Periode läuft', nb: 'Tag 3', ns: 'voraussichtliches Ende in 1–3 Tagen', q: 'Periode beendet' },
+    spring: { date: 'Mittwoch, 14. Oktober', day: 9, name: 'Frühling', phase: 'Follikelphase', words: 'Aufbau · Energie kommt zurück',
+              nl: 'Nächste Periode', nb: 'in 18–22 Tagen', ns: 'voraussichtlich 1.–5. November', q: 'Periode hat begonnen' },
+    summer: { date: 'Dienstag, 20. Oktober', day: 15, name: 'Sommer', phase: 'Eisprung, geschätzt', words: 'Höhepunkt · Offenheit',
+              nl: 'Nächste Periode', nb: 'in 12–16 Tagen', ns: 'voraussichtlich 1.–5. November', q: 'Periode hat begonnen' },
+    autumn: { date: 'Dienstag, 27. Oktober', day: 22, name: 'Herbst', phase: 'Lutealphase', words: 'Abschluss · Sensibilität · Vorbereitung',
+              nl: 'Nächste Periode', nb: 'in 5–9 Tagen', ns: 'voraussichtlich 1.–5. November', q: 'Periode hat begonnen' }
+  };
+  function setText(id, t) { document.getElementById(id).textContent = t; }
+  function renderHeute(season) {
+    var d = HEUTE[season];
+    setText('h-date', d.date); setText('h-day', 'Zyklustag ' + d.day + ' von 28'); setText('h-name', d.name);
+    setText('h-words', d.words); setText('h-phase', d.phase); setText('h-next-l', d.nl); setText('h-next', d.nb); setText('h-next-s', d.ns);
+    document.querySelector('#h-quick span').textContent = d.q;
+    document.getElementById('h-glyph').setAttribute('href', '#g-' + season);
+    document.getElementById('lauf').setAttribute('aria-label', 'Jahreslauf: Zyklustag ' + d.day + ' von 28, ' + d.name + '. Nächste Periode erwartet um Tag 27 bis 31.');
+    renderLauf(d.day);
+  }
+
+  // Kalender Oktober 2026: 1.10. ist Donnerstag, Woche ab Montag; Raster 28.9. bis 1.11.
+  // Zyklus ab 6.10.: Winter 6.–10., Frühling 11.–18., Sommer 19.–21., Herbst 22.10.–2.11.; vorheriger Herbst bis 5.10.
+  function phaseOf(m, d) {
+    if (m === 9) return 'aut';
+    if (m === 11) return 'aut';
+    if (d <= 5) return 'aut';
+    if (d <= 10) return 'win';
+    if (d <= 18) return 'spr';
+    if (d <= 21) return 'sum';
+    return 'aut';
+  }
+  var colors = { win: '--win', spr: '--spr', sum: '--sum', aut: '--aut' };
+  var cells = [];
+  [28, 29, 30].forEach(function (d) { cells.push({ m: 9, d: d }); });
+  for (var d = 1; d <= 31; d++) cells.push({ m: 10, d: d });
+  cells.push({ m: 11, d: 1 });
+  var html = '';
+  ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'].forEach(function (w) { html += '<div class="wd" aria-hidden="true">' + w + '</div>'; });
+  cells.forEach(function (c, i) {
+    var cls = ['d'], p = phaseOf(c.m, c.d), col = i % 7;
+    if (c.m !== 10) cls.push('out');
+    if (c.m === 10 && c.d >= 6 && c.d <= 10) { cls.push('per'); if (c.d === 6 || col === 0) cls.push('rs'); if (c.d === 10 || col === 6) cls.push('re'); }
+    if (c.m === 10 && c.d >= 19 && c.d <= 21) { cls.push('sum'); if (c.d === 19 || col === 0) cls.push('rs'); if (c.d === 21 || col === 6) cls.push('re'); }
+    if (c.m === 11 && c.d === 1) cls.push('pred');
+    if (c.m === 10 && c.d === 14) cls.push('today', 'sel');
+    var future = (c.m === 10 && c.d > 14) || c.m === 11;
+    var prev = i > 0 ? phaseOf(cells[i - 1].m, cells[i - 1].d) : null;
+    var next = i < cells.length - 1 ? phaseOf(cells[i + 1].m, cells[i + 1].d) : null;
+    var phc = 'ph' + (future ? ' fut' : '') + (prev !== p || col === 0 ? ' f' : '') + (next !== p || col === 6 ? ' l' : '');
+    var pain = c.m === 10 && (c.d === 6 || c.d === 7 || c.d === 14 || c.d === 1) ? '<span class="pain"></span>' : '';
+    var label = c.d + '. ' + (c.m === 9 ? 'September' : c.m === 10 ? 'Oktober' : 'November');
+    html += '<div class="' + cls.join(' ') + '" aria-label="' + label + '"><span class="pill"></span><span class="n">' + c.d + pain + '</span>' +
+            '<span class="' + phc + '" style="background:var(' + colors[p] + ')"></span></div>';
+  });
+  document.getElementById('cal').innerHTML = html;
+
+  // Slider: Wert 4 von 10
+  (function () {
+    var v = 4, el = document.getElementById('slider'), h = '';
+    var x = v / 10 * 100;
+    h += '<div class="act" style="width:calc(' + x + '% - 6px)"></div>';
+    h += '<div class="ina" style="width:calc(' + (100 - x) + '% - 6px)"></div>';
+    for (var i = 1; i < 10; i++) {
+      if (i === v) continue;
+      var pos = i / 10 * 100;
+      h += '<span class="tick ' + (i < v ? 'a' : 'i') + '" style="left:' + pos + '%"></span>';
+    }
+    h += '<span class="th" style="left:' + x + '%"></span>';
+    el.innerHTML = h;
+  })();
+
+  // Umschalter
+  function press(attr, val) {
+    document.querySelectorAll('[' + attr + ']').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute(attr) === val ? 'true' : 'false'); });
+  }
+  document.querySelectorAll('[data-theme-btn]').forEach(function (b) {
+    b.addEventListener('click', function () { var t = b.getAttribute('data-theme-btn'); root.setAttribute('data-theme', t); press('data-theme-btn', t); });
+  });
+  document.querySelectorAll('[data-season-btn]').forEach(function (b) {
+    b.addEventListener('click', function () { var s = b.getAttribute('data-season-btn'); root.setAttribute('data-season', s); press('data-season-btn', s); renderHeute(s); });
+  });
+
+  renderHeute('spring');
+})();
+</script>
+</body>
+</html>

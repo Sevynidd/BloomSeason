@@ -25,3 +25,26 @@ replay_pid*
 
 # Kotlin Gradle plugin data, see https://kotlinlang.org/docs/whatsnew20.html#new-directory-for-kotlin-data-in-gradle-projects
 .kotlin/
+
+# BloomSeason: keine Gesundheitsdaten einchecken
+*.db
+*.sqlite
+*.sqlite3
+*.db-shm
+*.db-wal
+*.bsbackup
+backup/
+backups/
+export/
+exports/
+
+# Android / Gradle
+.gradle/
+build/
+local.properties
+.idea/
+*.iml
+*.apk
+*.aab
+*.jks
+*.keystore
