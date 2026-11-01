@@ -106,7 +106,7 @@ Das Design „Saisonlicht“ ([design-opus.html](design-opus.html)) ist in Compo
 ## 9. Datenschutz und Recht
 
 - Zyklusdaten sind Gesundheitsdaten und besonders sensibel. Bei rein privater Nutzung ohne Weitergabe greifen DSGVO-Pflichten wie Datenschutzerklärung oder Impressum nicht; das Schutzbedürfnis bleibt aber bestehen.
-- Ein späterer Sync soll möglich bleiben, deshalb ist die Netzwerkberechtigung nicht ausgeschlossen. Der MVP nutzt sie aber nicht, und alle Daten bleiben lokal.
+- Die App hat die Netzwerkberechtigung ausschließlich für die Update-Suche über die GitHub-Releases-API (nur lesend, es werden keine Daten gesendet). Alle Zyklusdaten bleiben lokal. Ein späterer Sync bleibt möglich.
 - Datenbank verschlüsselt, Backups nur verschlüsselt ablegen.
 - **Das Repo ist öffentlich.** Deshalb gehören keine echten Daten, Backups, Testexporte oder Screenshots mit Zyklusdaten hinein. Die `.gitignore` schließt Datenbank-, Export- und Backup-Dateien aus. Für Tests und Screenshots nur erfundene Beispieldaten verwenden.
 - Falls die App später doch an andere weitergegeben wird, gelten Datenschutzerklärung, Impressum und ein Hinweistext „keine medizinische Beratung, nicht zur Verhütung geeignet".

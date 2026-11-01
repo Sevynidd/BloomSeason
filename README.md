@@ -26,7 +26,7 @@ Die APK liegt danach unter `app/build/outputs/apk/debug/`. Im Debug-Build gibt e
 
 ## Datenschutz
 
-Keine Internetberechtigung, kein Android-Backup (`allowBackup=false`). Keine echten Zyklusdaten ins Repo einchecken.
+Internet nur für die Update-Suche (GitHub Releases), kein Android-Backup (`allowBackup=false`). Keine echten Zyklusdaten ins Repo einchecken.
 
 ## Lizenz
 
