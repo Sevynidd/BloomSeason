@@ -150,6 +150,8 @@ fun BloomApp(state: AppState, viewModel: AppViewModel) {
                             2 -> StatsScreen(state)
                             else -> SettingsScreen(
                                 settings = state.settings,
+                                backup = viewModel.backup,
+                                onExternal = viewModel::setAuthenticating,
                                 onChange = viewModel::updateSettings,
                                 onAppLockChange = ::changeAppLock,
                                 onMessage = { scope.launch { snackbar.showSnackbar(it) } },

@@ -17,6 +17,9 @@ data class AppSettings(
     val dailyTime: String = "21:00",
     val neutralText: Boolean = false,
     val appLock: Boolean = false,
+    /** Vom Nutzer gewählter Ordner (SAF-Tree-URI) für Sicherungen, leer solange keiner gewählt ist. */
+    val backupFolder: String = "",
+    val lastBackup: String = "",
 )
 
 class SettingsStore(private val context: Context) {
@@ -26,6 +29,8 @@ class SettingsStore(private val context: Context) {
         val dailyTime = stringPreferencesKey("daily_time")
         val neutralText = booleanPreferencesKey("neutral_text")
         val appLock = booleanPreferencesKey("app_lock")
+        val backupFolder = stringPreferencesKey("backup_folder")
+        val lastBackup = stringPreferencesKey("last_backup")
     }
 
     val settings: Flow<AppSettings> = context.dataStore.data.map { it.toSettings() }
@@ -38,6 +43,8 @@ class SettingsStore(private val context: Context) {
             prefs[Keys.dailyTime] = next.dailyTime
             prefs[Keys.neutralText] = next.neutralText
             prefs[Keys.appLock] = next.appLock
+            prefs[Keys.backupFolder] = next.backupFolder
+            prefs[Keys.lastBackup] = next.lastBackup
         }
     }
 
@@ -47,5 +54,7 @@ class SettingsStore(private val context: Context) {
         dailyTime = this[Keys.dailyTime] ?: "21:00",
         neutralText = this[Keys.neutralText] ?: false,
         appLock = this[Keys.appLock] ?: false,
+        backupFolder = this[Keys.backupFolder] ?: "",
+        lastBackup = this[Keys.lastBackup] ?: "",
     )
 }

@@ -20,6 +20,7 @@ import sevynidd.bloomseason.data.BloomDatabase
 import sevynidd.bloomseason.data.DayEntryEntity
 import sevynidd.bloomseason.data.PainEntryEntity
 import sevynidd.bloomseason.data.SettingsStore
+import sevynidd.bloomseason.data.backup.BackupRepository
 
 data class PainItem(val location: String, val intensity: Int)
 
@@ -50,6 +51,7 @@ private const val LOCK_GRACE_MS = 15_000L
 class AppViewModel(application: Application) : AndroidViewModel(application) {
     private val dao = BloomDatabase.create(application).dao()
     private val settingsStore = SettingsStore(application)
+    val backup = BackupRepository(application, dao, settingsStore::update)
     private val today = MutableStateFlow(LocalDate.now())
 
     val state: StateFlow<AppState> = combine(

@@ -34,6 +34,12 @@ abstract class BloomDao {
     @Query("SELECT * FROM pain_entry")
     abstract fun observePain(): Flow<List<PainEntryEntity>>
 
+    @Query("SELECT * FROM day_entry")
+    abstract suspend fun allDays(): List<DayEntryEntity>
+
+    @Query("SELECT * FROM pain_entry")
+    abstract suspend fun allPain(): List<PainEntryEntity>
+
     @Upsert
     abstract suspend fun upsertDay(entry: DayEntryEntity)
 
@@ -60,6 +66,14 @@ abstract class BloomDao {
         if (day == null) deleteDay(epochDay) else upsertDay(day)
         deletePain(epochDay)
         if (pain.isNotEmpty()) insertPain(pain)
+    }
+
+    /** Importierte Einträge ergänzen die vorhandenen; für importierte Tage ersetzen sie die Schmerzen. */
+    @Transaction
+    open suspend fun mergeIn(days: List<DayEntryEntity>, pain: List<PainEntryEntity>) {
+        (days.map { it.epochDay } + pain.map { it.epochDay }).distinct().forEach { deletePain(it) }
+        insertDays(days)
+        insertPain(pain)
     }
 
     @Transaction

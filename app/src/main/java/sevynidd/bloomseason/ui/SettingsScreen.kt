@@ -53,15 +53,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import sevynidd.bloomseason.data.AppSettings
+import sevynidd.bloomseason.data.backup.BackupRepository
 import sevynidd.bloomseason.ui.theme.Tabular
-
-private const val COMING_LATER = "Folgt in einer späteren Version."
 
 @Composable
 fun SettingsScreen(
     settings: AppSettings,
+    backup: BackupRepository,
     onChange: ((AppSettings) -> AppSettings) -> Unit,
     onAppLockChange: (Boolean) -> Unit,
+    onExternal: (Boolean) -> Unit,
     onMessage: (String) -> Unit,
     onLoadSample: () -> Unit,
     onClearAll: () -> Unit,
@@ -102,10 +103,7 @@ fun SettingsScreen(
 
         SectionLabel("Daten", Modifier.padding(top = 6.dp))
         SettingsGroup {
-            SettingRow(Icons.Outlined.FolderOpen, "Backup-Ordner", "noch nicht festgelegt", { onMessage(COMING_LATER) }) { Chevron() }
-            SettingRow(Icons.Outlined.Download, "Backup erstellen", "verschlüsselt", { onMessage(COMING_LATER) }) { Chevron() }
-            SettingRow(Icons.Outlined.Upload, "Backup einspielen", null, { onMessage(COMING_LATER) }) { Chevron() }
-            SettingRow(Icons.Outlined.Description, "Exportieren / Importieren", "JSON oder CSV", { onMessage(COMING_LATER) }) { Chevron() }
+            BackupRows(settings, backup, onMessage, onExternal)
         }
 
         SectionLabel("App", Modifier.padding(top = 6.dp))
@@ -208,17 +206,17 @@ private fun UpdateRow(onMessage: (String) -> Unit) {
 }
 
 @Composable
-private fun SettingsGroup(content: @Composable () -> Unit) {
+internal fun SettingsGroup(content: @Composable () -> Unit) {
     BloomCard(contentPadding = androidx.compose.foundation.layout.PaddingValues(vertical = 4.dp)) { content() }
 }
 
 @Composable
-private fun Chevron() {
+internal fun Chevron() {
     Icon(Icons.Outlined.ChevronRight, contentDescription = null, Modifier.size(20.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
 }
 
 @Composable
-private fun SettingRow(
+internal fun SettingRow(
     icon: ImageVector,
     title: String,
     subtitle: String?,

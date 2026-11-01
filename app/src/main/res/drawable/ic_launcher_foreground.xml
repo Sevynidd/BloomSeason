@@ -4,16 +4,20 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <group
-        android:scaleX="2.6"
-        android:scaleY="2.6"
-        android:translateX="22.8"
-        android:translateY="22.8">
-        <path
-            android:pathData="M12 21v-9M12 13C8 13 5 10.5 5 6.5c4 0 7 2.5 7 6.5zM12 10.5c0-3.6 2.6-6 6.5-6 0 3.6-2.6 6-6.5 6zM7 21h10"
-            android:strokeWidth="1.5"
-            android:strokeColor="#A6D49B"
-            android:strokeLineCap="round"
-            android:strokeLineJoin="round" />
-    </group>
+    <!-- Vier Blütenblätter in den Farben der Jahreszeiten: Winter oben, dann im Uhrzeigersinn Frühling, Sommer, Herbst. -->
+    <path
+        android:fillColor="#A9C4E6"
+        android:pathData="M54 52C44 44 44 31 54 22C64 31 64 44 54 52Z" />
+    <path
+        android:fillColor="#A6D49B"
+        android:pathData="M56 54C64 44 77 44 86 54C77 64 64 64 56 54Z" />
+    <path
+        android:fillColor="#E8C677"
+        android:pathData="M54 56C64 64 64 77 54 86C44 77 44 64 54 56Z" />
+    <path
+        android:fillColor="#EBA484"
+        android:pathData="M52 54C44 64 31 64 22 54C31 44 44 44 52 54Z" />
+    <path
+        android:fillColor="#ECE7E1"
+        android:pathData="M54 50.5a3.5 3.5 0 1 0 0.01 0z" />
 </vector>

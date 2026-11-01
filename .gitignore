@@ -48,3 +48,6 @@ local.properties
 *.aab
 *.jks
 *.keystore
+
+# Gradle-Wrapper muss im Repo liegen, damit ein frischer Klon baut
+!gradle/wrapper/gradle-wrapper.jar
