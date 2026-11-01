@@ -1,6 +1,12 @@
 package sevynidd.bloomseason.ui
 
+import android.Manifest
+import android.app.TimePickerDialog
 import android.content.pm.ApplicationInfo
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import sevynidd.bloomseason.reminder.ReminderScheduler
+import sevynidd.bloomseason.reminder.parseTime
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -67,7 +73,25 @@ fun SettingsScreen(
     onLoadSample: () -> Unit,
     onClearAll: () -> Unit,
 ) {
-    val debuggable = (LocalContext.current.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
+    val context = LocalContext.current
+    val debuggable = (context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
+
+    val askNotifications = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        if (!granted) onMessage("Ohne Benachrichtigungen kann die App nicht erinnern. Erlaube sie in den Systemeinstellungen.")
+    }
+    // Beim Einschalten einer Erinnerung wird einmal die Berechtigung für Benachrichtigungen erfragt.
+    fun remind(enabled: Boolean, change: (AppSettings) -> AppSettings) {
+        onChange(change)
+        if (enabled && !ReminderScheduler.canNotify(context)) askNotifications.launch(Manifest.permission.POST_NOTIFICATIONS)
+    }
+    fun pickTime() {
+        val time = parseTime(settings.dailyTime)
+        TimePickerDialog(
+            context,
+            { _, hour, minute -> onChange { it.copy(dailyTime = "%02d:%02d".format(hour, minute)) } },
+            time.hour, time.minute, true,
+        ).show()
+    }
 
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp),
@@ -78,10 +102,10 @@ fun SettingsScreen(
         SectionLabel("Erinnerungen")
         SettingsGroup {
             SettingRow(Icons.Outlined.Notifications, "Periode erwartet", "2 Tage vor dem Zeitfenster") {
-                Switch(settings.remindExpected, { v -> onChange { it.copy(remindExpected = v) } })
+                Switch(settings.remindExpected, { v -> remind(v) { it.copy(remindExpected = v) } })
             }
-            SettingRow(Icons.Outlined.Schedule, "Täglich eintragen", "${settings.dailyTime} Uhr") {
-                Switch(settings.remindDaily, { v -> onChange { it.copy(remindDaily = v) } })
+            SettingRow(Icons.Outlined.Schedule, "Täglich eintragen", "${settings.dailyTime} Uhr, tippen zum Ändern", ::pickTime) {
+                Switch(settings.remindDaily, { v -> remind(v) { it.copy(remindDaily = v) } })
             }
             SettingRow(Icons.Outlined.VisibilityOff, "Neutraler Text", "„Zeit für deinen Eintrag“ statt „Periode“") {
                 Switch(settings.neutralText, { v -> onChange { it.copy(neutralText = v) } })
@@ -95,7 +119,7 @@ fun SettingsScreen(
             }
         }
         Text(
-            "Erinnerungen werden gespeichert, aber noch nicht ausgelöst. Die App-Sperre nutzt die Bildschirmsperre deines Geräts und greift beim Öffnen und nach 15 Sekunden im Hintergrund.",
+            "Die Erinnerungen kommen zur eingestellten Uhrzeit als Benachrichtigung; die tägliche nur, wenn für den Tag noch nichts eingetragen ist. Die App-Sperre nutzt die Bildschirmsperre deines Geräts und greift beim Öffnen und nach 15 Sekunden im Hintergrund.",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(horizontal = 4.dp),

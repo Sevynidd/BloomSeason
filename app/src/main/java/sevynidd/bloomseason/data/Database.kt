@@ -90,7 +90,12 @@ abstract class BloomDatabase : RoomDatabase() {
     abstract fun dao(): BloomDao
 
     companion object {
-        fun create(context: Context): BloomDatabase =
-            Room.databaseBuilder(context.applicationContext, BloomDatabase::class.java, "bloomseason.db").build()
+        @Volatile private var instance: BloomDatabase? = null
+
+        /** Eine gemeinsame Instanz für die App und den Erinnerungs-Worker. */
+        fun get(context: Context): BloomDatabase = instance ?: synchronized(this) {
+            instance ?: Room.databaseBuilder(context.applicationContext, BloomDatabase::class.java, "bloomseason.db")
+                .build().also { instance = it }
+        }
     }
 }

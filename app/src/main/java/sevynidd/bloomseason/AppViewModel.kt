@@ -9,6 +9,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import sevynidd.bloomseason.reminder.ReminderScheduler
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import sevynidd.bloomseason.core.Bleeding
@@ -49,7 +53,7 @@ data class AppState(
 private const val LOCK_GRACE_MS = 15_000L
 
 class AppViewModel(application: Application) : AndroidViewModel(application) {
-    private val dao = BloomDatabase.create(application).dao()
+    private val dao = BloomDatabase.get(application).dao()
     private val settingsStore = SettingsStore(application)
     val backup = BackupRepository(application, dao, settingsStore::update)
     private val today = MutableStateFlow(LocalDate.now())
@@ -70,6 +74,16 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             settings = settings,
         )
     }.stateIn(viewModelScope, SharingStarted.Eagerly, AppState.empty(today.value))
+
+    init {
+        // Die tägliche Prüfung folgt den Erinnerungs-Einstellungen und wird bei jedem App-Start neu geplant.
+        viewModelScope.launch {
+            settingsStore.settings
+                .map { Triple(it.remindExpected, it.remindDaily, it.dailyTime) }
+                .distinctUntilChanged()
+                .collect { ReminderScheduler.update(application, settingsStore.settings.first()) }
+        }
+    }
 
     private val _unlocked = MutableStateFlow(false)
     val unlocked: StateFlow<Boolean> = _unlocked
@@ -105,6 +119,15 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             val epochDay = date.toEpochDay()
             val day = bleeding.takeIf { it != Bleeding.NONE }?.let { DayEntryEntity(epochDay, it.level) }
             dao.saveDay(day, epochDay, pain.map { (location, intensity) -> PainEntryEntity(epochDay, location, intensity) })
+        }
+    }
+
+    /** Trägt rückwirkend eine ganze Periode ein; vorhandene Blutungswerte der Tage werden ersetzt, Schmerzen bleiben. */
+    fun savePeriodRange(start: LocalDate, end: LocalDate, bleeding: Bleeding) {
+        val first = minOf(start, end)
+        val last = minOf(maxOf(start, end), today.value)
+        viewModelScope.launch {
+            dao.insertDays((first.toEpochDay()..last.toEpochDay()).map { DayEntryEntity(it, bleeding.level) })
         }
     }
 
