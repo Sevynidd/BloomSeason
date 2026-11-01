@@ -46,6 +46,7 @@ private const val COMING_LATER = "Folgt in einer späteren Version."
 fun SettingsScreen(
     settings: AppSettings,
     onChange: ((AppSettings) -> AppSettings) -> Unit,
+    onAppLockChange: (Boolean) -> Unit,
     onMessage: (String) -> Unit,
     onLoadSample: () -> Unit,
     onClearAll: () -> Unit,
@@ -74,11 +75,11 @@ fun SettingsScreen(
         SectionLabel("Sicherheit", Modifier.padding(top = 6.dp))
         SettingsGroup {
             SettingRow(Icons.Outlined.Lock, "App-Sperre", "Biometrie oder PIN") {
-                Switch(settings.appLock, { v -> onChange { it.copy(appLock = v) } })
+                Switch(settings.appLock, onAppLockChange)
             }
         }
         Text(
-            "Erinnerungen und App-Sperre werden gespeichert, aber noch nicht ausgelöst.",
+            "Erinnerungen werden gespeichert, aber noch nicht ausgelöst. Die App-Sperre nutzt die Bildschirmsperre deines Geräts und greift beim Öffnen und nach 15 Sekunden im Hintergrund.",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(horizontal = 4.dp),

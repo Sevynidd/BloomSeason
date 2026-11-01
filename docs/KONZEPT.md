@@ -99,8 +99,8 @@ Entschieden: Der Nutzer kennt Kotlin und Compose bereits und ist der einzige Nut
 
 Das Design „Saisonlicht“ ([design-opus.html](design-opus.html)) ist in Compose umgesetzt, Hell und Dunkel folgen dem System, die aktuelle Jahreszeit bestimmt die Akzentfarbe.
 
-- **Fertig:** Vorhersagelogik mit Tests (`core`), Room-Datenbank, Heute, Kalender, Tag eintragen, Statistik und Muster, Einstellungen mit gespeicherten Schaltern, Beispieldaten im Debug-Build.
-- **Noch nicht umgesetzt:** Erinnerungen (Benachrichtigungen), App-Sperre, Backup, Export und Import, Verschlüsselung der Datenbank. Die Einstellungen dazu sind sichtbar, lösen aber noch nichts aus.
+- **Fertig:** Vorhersagelogik mit Tests (`core`), Room-Datenbank, Heute, Kalender, Tag eintragen, Statistik und Muster, Einstellungen mit gespeicherten Schaltern, App-Sperre über die Bildschirmsperre des Geräts (beim Öffnen und nach 15 Sekunden im Hintergrund, mit Schutz vor Screenshots), Beispieldaten im Debug-Build.
+- **Noch nicht umgesetzt:** Erinnerungen (Benachrichtigungen), Backup, Export und Import, Verschlüsselung der Datenbank. Die Einstellungen dazu sind sichtbar, lösen aber noch nichts aus.
 - **Abweichung vom Entwurf:** In der Periode zeigt die Heute-Seite keinen Knopf „Periode beendet“. Eine Periode ergibt sich aus den erfassten Blutungstagen (ein freier Tag Lücke ist erlaubt).
 
 ## 9. Datenschutz und Recht

@@ -36,11 +36,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -79,12 +74,16 @@ private data class CellInfo(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun CalendarScreen(state: AppState, onEdit: (LocalDate) -> Unit) {
+fun CalendarScreen(
+    state: AppState,
+    monthIndex: Int,
+    onMonthChange: (Int) -> Unit,
+    selected: LocalDate,
+    onSelect: (LocalDate) -> Unit,
+    onEdit: (LocalDate) -> Unit,
+) {
     val today = state.today
-    var monthIndex by rememberSaveable { mutableIntStateOf(today.year * 12 + today.monthValue - 1) }
-    var selectedEpoch by rememberSaveable { mutableLongStateOf(today.toEpochDay()) }
     val month = YearMonth.of(monthIndex / 12, monthIndex % 12 + 1)
-    val selected = LocalDate.ofEpochDay(selectedEpoch)
     val colors = seasonColors
 
     Column(
@@ -93,8 +92,8 @@ fun CalendarScreen(state: AppState, onEdit: (LocalDate) -> Unit) {
     ) {
         AppBar("${month.month.getDisplayName(JavaTextStyle.FULL, Locale.GERMAN)} ${month.year}") {
             Row {
-                IconButton({ monthIndex-- }) { Icon(Icons.Outlined.ChevronLeft, contentDescription = "Vorheriger Monat") }
-                IconButton({ monthIndex++ }) { Icon(Icons.Outlined.ChevronRight, contentDescription = "Nächster Monat") }
+                IconButton({ onMonthChange(monthIndex - 1) }) { Icon(Icons.Outlined.ChevronLeft, contentDescription = "Vorheriger Monat") }
+                IconButton({ onMonthChange(monthIndex + 1) }) { Icon(Icons.Outlined.ChevronRight, contentDescription = "Nächster Monat") }
             }
         }
 
@@ -132,8 +131,8 @@ fun CalendarScreen(state: AppState, onEdit: (LocalDate) -> Unit) {
                             lineStart = previous?.season != cell.season,
                             lineEnd = next?.season != cell.season,
                             onClick = {
-                                selectedEpoch = cell.date.toEpochDay()
-                                if (!cell.inMonth) monthIndex = cell.date.year * 12 + cell.date.monthValue - 1
+                                onSelect(cell.date)
+                                if (!cell.inMonth) onMonthChange(cell.date.year * 12 + cell.date.monthValue - 1)
                             },
                         )
                     }

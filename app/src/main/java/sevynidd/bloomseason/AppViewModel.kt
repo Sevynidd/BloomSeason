@@ -1,6 +1,7 @@
 package sevynidd.bloomseason
 
 import android.app.Application
+import android.os.SystemClock
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import java.time.LocalDate
@@ -28,6 +29,8 @@ data class AppState(
     val pain: Map<LocalDate, List<PainItem>>,
     val model: CycleModel,
     val settings: AppSettings,
+    /** false, bis Datenbank und Einstellungen zum ersten Mal geladen sind. */
+    val ready: Boolean = true,
 ) {
     val painSamples: List<PainSample>
         get() = pain.flatMap { (date, items) -> items.map { PainSample(date, it.intensity) } }
@@ -36,9 +39,13 @@ data class AppState(
         get() = pain.values.flatten().map { it.location }.distinct()
 
     companion object {
-        fun empty(today: LocalDate) = AppState(today, emptyMap(), emptyMap(), CycleModel(emptyList(), today), AppSettings())
+        fun empty(today: LocalDate) =
+            AppState(today, emptyMap(), emptyMap(), CycleModel(emptyList(), today), AppSettings(), ready = false)
     }
 }
+
+/** So lange darf die App im Hintergrund sein, bevor sie wieder gesperrt ist. */
+private const val LOCK_GRACE_MS = 15_000L
 
 class AppViewModel(application: Application) : AndroidViewModel(application) {
     private val dao = BloomDatabase.create(application).dao()
@@ -61,6 +68,31 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             settings = settings,
         )
     }.stateIn(viewModelScope, SharingStarted.Eagerly, AppState.empty(today.value))
+
+    private val _unlocked = MutableStateFlow(false)
+    val unlocked: StateFlow<Boolean> = _unlocked
+
+    private var backgroundSince: Long? = null
+    private var authenticating = false
+
+    fun unlock() {
+        _unlocked.value = true
+    }
+
+    /** Während einer Entsperr-Abfrage kann die Activity kurz pausieren; das zählt nicht als Hintergrund. */
+    fun setAuthenticating(value: Boolean) {
+        authenticating = value
+    }
+
+    fun onBackground() {
+        if (_unlocked.value && !authenticating) backgroundSince = SystemClock.elapsedRealtime()
+    }
+
+    fun onForeground() {
+        val since = backgroundSince ?: return
+        backgroundSince = null
+        if (SystemClock.elapsedRealtime() - since > LOCK_GRACE_MS) _unlocked.value = false
+    }
 
     fun refreshToday() {
         today.value = LocalDate.now()
