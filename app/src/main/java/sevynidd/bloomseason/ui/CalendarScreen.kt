@@ -62,7 +62,10 @@ import java.time.format.TextStyle as JavaTextStyle
 import java.util.Locale
 import sevynidd.bloomseason.AppState
 import sevynidd.bloomseason.core.Season
+import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.graphics.luminance
 import sevynidd.bloomseason.ui.theme.SeasonColors
+import sevynidd.bloomseason.ui.theme.SeasonPalette
 import sevynidd.bloomseason.ui.theme.Tabular
 import sevynidd.bloomseason.ui.theme.seasonColors
 
@@ -72,6 +75,7 @@ private data class CellInfo(
     val date: LocalDate,
     val inMonth: Boolean,
     val band: Band,
+    val bleeding: Bleeding?,
     val predicted: Boolean,
     val hasPain: Boolean,
     val season: Season?,
@@ -167,7 +171,9 @@ fun CalendarScreen(
             horizontalArrangement = Arrangement.spacedBy(14.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            LegendItem("Periode") { Box(Modifier.size(14.dp).clip(CircleShape).background(colors.winter.accent)) }
+            Bleeding.entries.filter { it.isPeriodDay }.forEach { level ->
+                LegendItem("Periode ${level.label}") { Box(Modifier.size(14.dp).clip(CircleShape).background(periodColor(level, colors.winter))) }
+            }
             LegendItem("erwartet") { Box(Modifier.size(14.dp).dashedCircle(colors.winter.accent)) }
             LegendItem("Sommer · Eisprung geschätzt") {
                 Box(Modifier.size(14.dp).clip(CircleShape).background(colors.summer.container).border(1.dp, colors.summer.accent, CircleShape))
@@ -198,6 +204,7 @@ private fun cellInfo(state: AppState, date: LocalDate, month: YearMonth): CellIn
         date = date,
         inMonth = YearMonth.from(date) == month,
         band = band,
+        bleeding = state.bleeding[date],
         predicted = predicted,
         hasPain = state.pain[date].orEmpty().isNotEmpty(),
         season = phase?.season,
@@ -220,13 +227,13 @@ private fun DayCell(
     val scheme = MaterialTheme.colorScheme
     val textColor = when {
         isSelected -> scheme.background
-        cell.band == Band.PERIOD -> colors.winter.onAccent
+        cell.band == Band.PERIOD -> readableOn(periodColor(cell.bleeding, colors.winter), colors.winter)
         cell.band == Band.SUMMER -> colors.summer.onContainer
         !cell.inMonth -> scheme.onSurfaceVariant
         else -> scheme.onSurface
     }
     val bandColor = when (cell.band) {
-        Band.PERIOD -> colors.winter.accent
+        Band.PERIOD -> periodColor(cell.bleeding, colors.winter)
         Band.SUMMER -> colors.summer.container
         Band.NONE -> Color.Transparent
     }
@@ -238,7 +245,7 @@ private fun DayCell(
     )
     val description = buildString {
         append(cell.date.fullLabel())
-        if (cell.band == Band.PERIOD) append(", Periode")
+        if (cell.band == Band.PERIOD) append(", Periode, Blutung ${cell.bleeding?.label}")
         if (cell.predicted) append(", Periode erwartet")
         if (cell.band == Band.SUMMER) append(", Eisprung geschätzt")
         if (cell.hasPain) append(", Schmerz notiert")
@@ -368,4 +375,24 @@ private fun SheetRow(icon: androidx.compose.ui.graphics.vector.ImageVector, titl
         Text(title, Modifier.weight(1f))
         Text(value, style = MaterialTheme.typography.bodyMedium.merge(Tabular), color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
+}
+
+/** Je stärker die Blutung, desto kräftiger die Farbe: von der hellen Fläche bis zum vollen Akzent. */
+private fun periodColor(bleeding: Bleeding?, palette: SeasonPalette): Color {
+    val strength = when (bleeding) {
+        Bleeding.LIGHT -> 0.3f
+        Bleeding.HEAVY -> 1f
+        else -> 0.65f
+    }
+    return lerp(palette.container, palette.accent, strength)
+}
+
+/** Wählt unter den beiden Textfarben der Palette die mit dem besseren Kontrast zum Untergrund. */
+private fun readableOn(background: Color, palette: SeasonPalette): Color {
+    fun contrast(text: Color): Float {
+        val a = background.luminance() + 0.05f
+        val b = text.luminance() + 0.05f
+        return maxOf(a, b) / minOf(a, b)
+    }
+    return if (contrast(palette.onAccent) >= contrast(palette.onContainer)) palette.onAccent else palette.onContainer
 }
