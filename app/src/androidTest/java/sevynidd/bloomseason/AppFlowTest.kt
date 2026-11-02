@@ -7,6 +7,12 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeLeft
+import androidx.compose.ui.test.swipeRight
+import java.time.YearMonth
+import java.time.format.TextStyle
+import java.util.Locale
 import org.junit.Rule
 import org.junit.Test
 
@@ -33,12 +39,15 @@ class AppFlowTest {
     }
 
     @Test
-    fun periodRangeDialogOpensFromCalendar() {
+    fun swipingChangesTheMonth() {
         openTab("Kalender")
-        rule.onNodeWithContentDescription("Periode nachtragen").performClick()
-        rule.onNodeWithText("Blutungsstärke für alle gewählten Tage").assertIsDisplayed()
-        rule.onNodeWithText("Abbrechen").performClick()
-        rule.onNodeWithText("Tag bearbeiten").assertIsDisplayed()
+        fun title(month: YearMonth) = "${month.month.getDisplayName(TextStyle.FULL, Locale.GERMAN)} ${month.year}"
+        val now = YearMonth.now()
+        rule.onNodeWithText(title(now)).assertIsDisplayed()
+        rule.onNodeWithText("Tag bearbeiten").performTouchInput { swipeLeft() }
+        rule.onNodeWithText(title(now.plusMonths(1))).assertIsDisplayed()
+        rule.onNodeWithText("Tag bearbeiten").performTouchInput { swipeRight() }
+        rule.onNodeWithText(title(now)).assertIsDisplayed()
     }
 
     @Test

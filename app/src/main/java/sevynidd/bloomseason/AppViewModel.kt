@@ -17,6 +17,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import sevynidd.bloomseason.core.Bleeding
 import sevynidd.bloomseason.core.CycleModel
+import sevynidd.bloomseason.core.DEFAULT_PERIOD_LENGTH
+import kotlin.math.roundToInt
 import sevynidd.bloomseason.core.PainSample
 import sevynidd.bloomseason.core.detectPeriods
 import sevynidd.bloomseason.data.AppSettings
@@ -115,19 +117,21 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun saveDay(date: LocalDate, bleeding: Bleeding, pain: Map<String, Int>) {
+        val current = state.value
         viewModelScope.launch {
             val epochDay = date.toEpochDay()
             val day = bleeding.takeIf { it != Bleeding.NONE }?.let { DayEntryEntity(epochDay, it.level) }
             dao.saveDay(day, epochDay, pain.map { (location, intensity) -> PainEntryEntity(epochDay, location, intensity) })
-        }
-    }
-
-    /** Trägt rückwirkend eine ganze Periode ein; vorhandene Blutungswerte der Tage werden ersetzt, Schmerzen bleiben. */
-    fun savePeriodRange(start: LocalDate, end: LocalDate, bleeding: Bleeding) {
-        val first = minOf(start, end)
-        val last = minOf(maxOf(start, end), today.value)
-        viewModelScope.launch {
-            dao.insertDays((first.toEpochDay()..last.toEpochDay()).map { DayEntryEntity(it, bleeding.level) })
+            // Beginnt hier rückwirkend eine neue Periode, werden die folgenden Tage in üblicher Länge vorbelegt.
+            val newStart = bleeding.isPeriodDay && date.isBefore(current.today) &&
+                current.bleeding[date]?.isPeriodDay != true && current.bleeding[date.minusDays(1)]?.isPeriodDay != true
+            if (newStart) {
+                val length = (current.model.stats.meanPeriod?.roundToInt() ?: DEFAULT_PERIOD_LENGTH).coerceIn(2, 10)
+                val prefill = (1 until length).map { date.plusDays(it.toLong()) }
+                    .filter { !it.isAfter(current.today) && it !in current.bleeding }
+                    .map { DayEntryEntity(it.toEpochDay(), bleeding.level) }
+                if (prefill.isNotEmpty()) dao.insertDays(prefill)
+            }
         }
     }
 

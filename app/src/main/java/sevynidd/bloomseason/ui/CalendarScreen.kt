@@ -27,11 +27,10 @@ import androidx.compose.material.icons.outlined.Bolt
 import androidx.compose.material.icons.outlined.ChevronLeft
 import androidx.compose.material.icons.outlined.ChevronRight
 import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.EditCalendar
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.input.pointer.pointerInput
 import sevynidd.bloomseason.core.Bleeding
 import androidx.compose.material.icons.outlined.WaterDrop
 import androidx.compose.material3.FilledTonalButton
@@ -91,33 +90,30 @@ fun CalendarScreen(
     selected: LocalDate,
     onSelect: (LocalDate) -> Unit,
     onEdit: (LocalDate) -> Unit,
-    onSavePeriod: (LocalDate, LocalDate, Bleeding) -> Unit,
 ) {
     val today = state.today
-    var addingPeriod by rememberSaveable { mutableStateOf(false) }
-    if (addingPeriod) {
-        PeriodRangeDialog(
-            today = today,
-            initial = selected,
-            onDismiss = { addingPeriod = false },
-            onSave = { start, end, bleeding ->
-                addingPeriod = false
-                onSavePeriod(start, end, bleeding)
-                onSelect(start)
-                onMonthChange(start.year * 12 + start.monthValue - 1)
-            },
-        )
-    }
     val month = YearMonth.of(monthIndex / 12, monthIndex % 12 + 1)
     val colors = seasonColors
+    val currentIndex by rememberUpdatedState(monthIndex)
 
     Column(
-        Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp),
+        Modifier.fillMaxSize()
+            // Nach links wischen: nächster Monat, nach rechts: vorheriger.
+            .pointerInput(Unit) {
+                var drag = 0f
+                detectHorizontalDragGestures(
+                    onDragStart = { drag = 0f },
+                    onDragEnd = {
+                        if (drag < -80f) onMonthChange(currentIndex + 1) else if (drag > 80f) onMonthChange(currentIndex - 1)
+                    },
+                    onHorizontalDrag = { _, amount -> drag += amount },
+                )
+            }
+            .verticalScroll(rememberScrollState()).padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         AppBar("${month.month.getDisplayName(JavaTextStyle.FULL, Locale.GERMAN)} ${month.year}") {
             Row {
-                IconButton({ addingPeriod = true }) { Icon(Icons.Outlined.EditCalendar, contentDescription = "Periode nachtragen") }
                 IconButton({ onMonthChange(monthIndex - 1) }) { Icon(Icons.Outlined.ChevronLeft, contentDescription = "Vorheriger Monat") }
                 IconButton({ onMonthChange(monthIndex + 1) }) { Icon(Icons.Outlined.ChevronRight, contentDescription = "Nächster Monat") }
             }

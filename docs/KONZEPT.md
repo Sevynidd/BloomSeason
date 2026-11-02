@@ -95,11 +95,11 @@ Entschieden: Der Nutzer kennt Kotlin und Compose bereits und ist der einzige Nut
 - **Backup:** Export als verschlüsselte Datei in einen frei gewählten Ordner auf dem Gerät (Storage Access Framework). Wer den Ordner weitersynchronisiert (z. B. Syncthing, Nextcloud), tut das außerhalb der App.
 - **Tests:** Unit-Tests für Vorhersagelogik, UI-Tests nur für die Kernflows
 
-### Stand der Umsetzung (v0.6)
+### Stand der Umsetzung (v0.9)
 
 Das Design „Saisonlicht“ ([design-opus.html](design-opus.html)) ist in Compose umgesetzt, Hell und Dunkel folgen dem System, die aktuelle Jahreszeit bestimmt die Akzentfarbe.
 
-- **Fertig:** Vorhersagelogik mit Tests (`core`), Heute, Kalender, Tag eintragen und Periode rückwirkend für mehrere Tage nachtragen, Statistik und Muster, App-Sperre über die Bildschirmsperre des Geräts (beim Öffnen und nach 15 Sekunden im Hintergrund, mit Schutz vor Screenshots), Erinnerungen als Benachrichtigung (Uhrzeit einstellbar, optional neutraler Text), verschlüsseltes Backup (Passwort, AES-256-GCM) in einen frei gewählten Ordner, Export und Import als JSON oder CSV, Datenbank mit SQLCipher verschlüsselt (Schlüssel im Android Keystore), Beispieldaten im Debug-Build.
+- **Fertig:** Vorhersagelogik mit Tests (`core`), Heute, Kalender, Tag eintragen (beginnt rückwirkend eine Periode, werden die folgenden Tage in durchschnittlicher Länge vorbelegt), Monatswechsel per Wischen, Statistik und Muster, App-Sperre über die Bildschirmsperre des Geräts (beim Öffnen und nach 15 Sekunden im Hintergrund, mit Schutz vor Screenshots), Erinnerungen als Benachrichtigung (Uhrzeit einstellbar, optional neutraler Text), verschlüsseltes Backup (Passwort, AES-256-GCM) in einen frei gewählten Ordner, Export und Import als JSON oder CSV, Datenbank mit SQLCipher verschlüsselt (Schlüssel im Android Keystore), Beispieldaten im Debug-Build.
 - **Noch nicht umgesetzt:** Widgets und weitere Werte (Stimmung, Schlaf, …), siehe „Später“. Fingerabdruck und Gesicht bei der App-Sperre sind nur auf dem Emulator mit PIN getestet.
 - **Abweichung vom Entwurf:** In der Periode zeigt die Heute-Seite keinen Knopf „Periode beendet“. Eine Periode ergibt sich aus den erfassten Blutungstagen (ein freier Tag Lücke ist erlaubt).
 

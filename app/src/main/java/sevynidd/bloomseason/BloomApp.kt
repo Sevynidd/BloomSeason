@@ -146,7 +146,6 @@ fun BloomApp(state: AppState, viewModel: AppViewModel) {
                                 selected = LocalDate.ofEpochDay(calendarSelected),
                                 onSelect = { calendarSelected = it.toEpochDay() },
                                 onEdit = { editingEpoch = it.toEpochDay() },
-                                onSavePeriod = viewModel::savePeriodRange,
                             )
                             2 -> StatsScreen(state)
                             else -> SettingsScreen(
