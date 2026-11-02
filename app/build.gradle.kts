@@ -20,8 +20,8 @@ android {
         applicationId = "sevynidd.bloomseason"
         minSdk = 34
         targetSdk = 37
-        versionCode = 6
-        versionName = "0.6"
+        versionCode = 7
+        versionName = "0.7"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         // SQLCipher bringt Bibliotheken je Architektur mit; Telefon (arm64) und Emulator (x86_64) genügen.
         ndk { abiFilters += listOf("arm64-v8a", "x86_64") }

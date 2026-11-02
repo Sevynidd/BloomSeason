@@ -3,12 +3,9 @@
 
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
 
-    <!-- Netzwerk und Installation nur für die Update-Funktion (GitHub Releases); es werden keine Daten gesendet. -->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <!-- Bewusst keine INTERNET-Berechtigung: Zyklusdaten bleiben auf dem Gerät. Updates kommen über Obtainium (GitHub-Releases). -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
-    <!-- Kein System-Backup: Zyklusdaten bleiben auf dem Gerät. -->
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
@@ -23,14 +20,5 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-        </provider>
     </application>
 </manifest>

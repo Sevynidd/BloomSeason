@@ -26,7 +26,7 @@ Die APK liegt danach unter `app/build/outputs/apk/debug/`. Im Debug-Build gibt e
 
 ## Datenschutz
 
-Internet nur für die Update-Suche (GitHub Releases), kein Android-Backup (`allowBackup=false`). Keine echten Zyklusdaten ins Repo einchecken.
+Keine Internetberechtigung, kein Android-Backup (`allowBackup=false`). Updates über [Obtainium](https://obtainium.imranr.dev/) mit der Repo-URL. Keine echten Zyklusdaten ins Repo einchecken.
 
 ## Lizenz
 

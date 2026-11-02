@@ -1,6 +1,8 @@
 package sevynidd.bloomseason.ui
 
 import android.Manifest
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.runtime.remember
 import android.app.TimePickerDialog
 import android.content.pm.ApplicationInfo
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -31,21 +33,6 @@ import androidx.compose.material.icons.outlined.Science
 import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material.icons.outlined.Upload
 import androidx.compose.material.icons.outlined.VisibilityOff
-import android.net.Uri
-import androidx.compose.material.icons.outlined.SystemUpdate
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.compose.LifecycleResumeEffect
-import kotlinx.coroutines.launch
-import sevynidd.bloomseason.data.update.ApkDownloadStatus
-import sevynidd.bloomseason.data.update.ApkInstaller
-import sevynidd.bloomseason.data.update.GitHubRelease
-import sevynidd.bloomseason.data.update.GitHubReleaseRepository
-import sevynidd.bloomseason.data.update.UpdateCheck
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -74,6 +61,7 @@ fun SettingsScreen(
     onClearAll: () -> Unit,
 ) {
     val context = LocalContext.current
+    val version = remember { context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: "" }
     val debuggable = (context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
 
     val askNotifications = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
@@ -131,7 +119,7 @@ fun SettingsScreen(
         }
 
         SectionLabel("App", Modifier.padding(top = 6.dp))
-        SettingsGroup { UpdateRow(onMessage) }
+        SettingsGroup { SettingRow(Icons.Outlined.Info, "Version", version) {} }
 
         if (debuggable) {
             SectionLabel("Debug", Modifier.padding(top = 6.dp))
@@ -148,84 +136,12 @@ fun SettingsScreen(
         ) {
             Icon(Icons.Outlined.PhoneAndroid, contentDescription = null, Modifier.size(14.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
             Text(
-                "Alle Daten bleiben auf diesem Gerät. Das Netzwerk dient nur der Update-Suche.",
+                "Alle Daten bleiben auf diesem Gerät. Die App hat keinen Internetzugriff.",
                 style = MaterialTheme.typography.bodySmall,
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
-    }
-}
-
-private const val RELEASE_OWNER = "Sevynidd"
-private const val RELEASE_REPO = "BloomSeason"
-
-@Composable
-private fun UpdateRow(onMessage: (String) -> Unit) {
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-    val installer = remember { ApkInstaller(context.applicationContext) }
-    val repository = remember { GitHubReleaseRepository(RELEASE_OWNER, RELEASE_REPO) }
-    val version = remember { context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: "0" }
-    var busy by remember { mutableStateOf(false) }
-    var available by remember { mutableStateOf<GitHubRelease?>(null) }
-    var pendingApk by remember { mutableStateOf<Uri?>(null) }
-    var progress by remember { mutableStateOf<String?>(null) }
-
-    // Nach der Erlaubnis „Unbekannte Apps installieren“ geht es direkt weiter.
-    LifecycleResumeEffect(pendingApk) {
-        val apk = pendingApk
-        if (apk != null && installer.canInstall()) {
-            pendingApk = null
-            installer.install(apk)
-        }
-        onPauseOrDispose {}
-    }
-
-    fun install(apk: Uri) {
-        if (installer.canInstall()) installer.install(apk) else {
-            pendingApk = apk
-            onMessage("Erlaube BloomSeason, Apps zu installieren.")
-            installer.openInstallPermission()
-        }
-    }
-
-    fun download(release: GitHubRelease) {
-        busy = true
-        scope.launch {
-            installer.observe(installer.startDownload(release)).collect { status ->
-                when (status) {
-                    is ApkDownloadStatus.InProgress -> progress =
-                        if (status.total > 0) "Lädt … ${status.downloaded * 100 / status.total} %" else "Lädt …"
-                    is ApkDownloadStatus.Succeeded -> { busy = false; progress = null; install(status.uri) }
-                    ApkDownloadStatus.Failed -> { busy = false; progress = null; onMessage("Download fehlgeschlagen.") }
-                }
-            }
-        }
-    }
-
-    val release = available
-    SettingRow(
-        Icons.Outlined.SystemUpdate,
-        if (release != null) "Version ${release.tagName.removePrefix("v")} installieren" else "Nach Updates suchen",
-        progress ?: "Installiert: Version $version",
-        onClick = if (busy) null else {
-            {
-                if (release != null) download(release) else {
-                    busy = true
-                    scope.launch {
-                        when (val result = repository.check(version)) {
-                            is UpdateCheck.Available -> { available = result.release; onMessage("Neue Version ${result.release.tagName.removePrefix("v")} verfügbar.") }
-                            UpdateCheck.UpToDate -> onMessage("Du hast die neueste Version.")
-                            UpdateCheck.Failed -> onMessage("Update-Prüfung nicht möglich.")
-                        }
-                        busy = false
-                    }
-                }
-            }
-        },
-    ) {
-        if (busy) CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp) else Chevron()
     }
 }
 

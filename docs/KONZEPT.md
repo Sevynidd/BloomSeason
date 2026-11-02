@@ -99,14 +99,14 @@ Entschieden: Der Nutzer kennt Kotlin und Compose bereits und ist der einzige Nut
 
 Das Design „Saisonlicht“ ([design-opus.html](design-opus.html)) ist in Compose umgesetzt, Hell und Dunkel folgen dem System, die aktuelle Jahreszeit bestimmt die Akzentfarbe.
 
-- **Fertig:** Vorhersagelogik mit Tests (`core`), Heute, Kalender, Tag eintragen und Periode rückwirkend für mehrere Tage nachtragen, Statistik und Muster, App-Sperre über die Bildschirmsperre des Geräts (beim Öffnen und nach 15 Sekunden im Hintergrund, mit Schutz vor Screenshots), Erinnerungen als Benachrichtigung (Uhrzeit einstellbar, optional neutraler Text), verschlüsseltes Backup (Passwort, AES-256-GCM) in einen frei gewählten Ordner, Export und Import als JSON oder CSV, Datenbank mit SQLCipher verschlüsselt (Schlüssel im Android Keystore), Update in der App über GitHub-Releases, Beispieldaten im Debug-Build.
+- **Fertig:** Vorhersagelogik mit Tests (`core`), Heute, Kalender, Tag eintragen und Periode rückwirkend für mehrere Tage nachtragen, Statistik und Muster, App-Sperre über die Bildschirmsperre des Geräts (beim Öffnen und nach 15 Sekunden im Hintergrund, mit Schutz vor Screenshots), Erinnerungen als Benachrichtigung (Uhrzeit einstellbar, optional neutraler Text), verschlüsseltes Backup (Passwort, AES-256-GCM) in einen frei gewählten Ordner, Export und Import als JSON oder CSV, Datenbank mit SQLCipher verschlüsselt (Schlüssel im Android Keystore), Beispieldaten im Debug-Build.
 - **Noch nicht umgesetzt:** Widgets und weitere Werte (Stimmung, Schlaf, …), siehe „Später“. Fingerabdruck und Gesicht bei der App-Sperre sind nur auf dem Emulator mit PIN getestet.
 - **Abweichung vom Entwurf:** In der Periode zeigt die Heute-Seite keinen Knopf „Periode beendet“. Eine Periode ergibt sich aus den erfassten Blutungstagen (ein freier Tag Lücke ist erlaubt).
 
 ## 9. Datenschutz und Recht
 
 - Zyklusdaten sind Gesundheitsdaten und besonders sensibel. Bei rein privater Nutzung ohne Weitergabe greifen DSGVO-Pflichten wie Datenschutzerklärung oder Impressum nicht; das Schutzbedürfnis bleibt aber bestehen.
-- Die App hat die Netzwerkberechtigung ausschließlich für die Update-Suche über die GitHub-Releases-API (nur lesend, es werden keine Daten gesendet). Alle Zyklusdaten bleiben lokal. Ein späterer Sync bleibt möglich.
+- Die App hat keine Netzwerkberechtigung und installiert nichts selbst. Updates holt Obtainium von den GitHub-Releases. Alle Zyklusdaten bleiben lokal; ein späterer Sync bleibt möglich.
 - Die Datenbank ist mit SQLCipher verschlüsselt, Backups sind passwortgeschützt. Exporte (JSON/CSV) sind bewusst unverschlüsselt.
 - **Das Repo ist öffentlich.** Deshalb gehören keine echten Daten, Backups, Testexporte oder Screenshots mit Zyklusdaten hinein. Die `.gitignore` schließt Datenbank-, Export- und Backup-Dateien aus. Für Tests und Screenshots nur erfundene Beispieldaten verwenden.
 - Falls die App später doch an andere weitergegeben wird, gelten Datenschutzerklärung, Impressum und ein Hinweistext „keine medizinische Beratung, nicht zur Verhütung geeignet".
