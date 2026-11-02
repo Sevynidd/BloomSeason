@@ -95,19 +95,19 @@ Entschieden: Der Nutzer kennt Kotlin und Compose bereits und ist der einzige Nut
 - **Backup:** Export als verschlüsselte Datei in einen frei gewählten Ordner auf dem Gerät (Storage Access Framework). Wer den Ordner weitersynchronisiert (z. B. Syncthing, Nextcloud), tut das außerhalb der App.
 - **Tests:** Unit-Tests für Vorhersagelogik, UI-Tests nur für die Kernflows
 
-### Stand der Umsetzung (v0.1)
+### Stand der Umsetzung (v0.6)
 
 Das Design „Saisonlicht“ ([design-opus.html](design-opus.html)) ist in Compose umgesetzt, Hell und Dunkel folgen dem System, die aktuelle Jahreszeit bestimmt die Akzentfarbe.
 
-- **Fertig:** Vorhersagelogik mit Tests (`core`), Room-Datenbank, Heute, Kalender, Tag eintragen, Statistik und Muster, Einstellungen mit gespeicherten Schaltern, App-Sperre über die Bildschirmsperre des Geräts (beim Öffnen und nach 15 Sekunden im Hintergrund, mit Schutz vor Screenshots), Beispieldaten im Debug-Build.
-- **Noch nicht umgesetzt:** Erinnerungen (Benachrichtigungen), Backup, Export und Import, Verschlüsselung der Datenbank. Die Einstellungen dazu sind sichtbar, lösen aber noch nichts aus.
+- **Fertig:** Vorhersagelogik mit Tests (`core`), Heute, Kalender, Tag eintragen und Periode rückwirkend für mehrere Tage nachtragen, Statistik und Muster, App-Sperre über die Bildschirmsperre des Geräts (beim Öffnen und nach 15 Sekunden im Hintergrund, mit Schutz vor Screenshots), Erinnerungen als Benachrichtigung (Uhrzeit einstellbar, optional neutraler Text), verschlüsseltes Backup (Passwort, AES-256-GCM) in einen frei gewählten Ordner, Export und Import als JSON oder CSV, Datenbank mit SQLCipher verschlüsselt (Schlüssel im Android Keystore), Update in der App über GitHub-Releases, Beispieldaten im Debug-Build.
+- **Noch nicht umgesetzt:** Widgets und weitere Werte (Stimmung, Schlaf, …), siehe „Später“. Fingerabdruck und Gesicht bei der App-Sperre sind nur auf dem Emulator mit PIN getestet.
 - **Abweichung vom Entwurf:** In der Periode zeigt die Heute-Seite keinen Knopf „Periode beendet“. Eine Periode ergibt sich aus den erfassten Blutungstagen (ein freier Tag Lücke ist erlaubt).
 
 ## 9. Datenschutz und Recht
 
 - Zyklusdaten sind Gesundheitsdaten und besonders sensibel. Bei rein privater Nutzung ohne Weitergabe greifen DSGVO-Pflichten wie Datenschutzerklärung oder Impressum nicht; das Schutzbedürfnis bleibt aber bestehen.
 - Die App hat die Netzwerkberechtigung ausschließlich für die Update-Suche über die GitHub-Releases-API (nur lesend, es werden keine Daten gesendet). Alle Zyklusdaten bleiben lokal. Ein späterer Sync bleibt möglich.
-- Datenbank verschlüsselt, Backups nur verschlüsselt ablegen.
+- Die Datenbank ist mit SQLCipher verschlüsselt, Backups sind passwortgeschützt. Exporte (JSON/CSV) sind bewusst unverschlüsselt.
 - **Das Repo ist öffentlich.** Deshalb gehören keine echten Daten, Backups, Testexporte oder Screenshots mit Zyklusdaten hinein. Die `.gitignore` schließt Datenbank-, Export- und Backup-Dateien aus. Für Tests und Screenshots nur erfundene Beispieldaten verwenden.
 - Falls die App später doch an andere weitergegeben wird, gelten Datenschutzerklärung, Impressum und ein Hinweistext „keine medizinische Beratung, nicht zur Verhütung geeignet".
 

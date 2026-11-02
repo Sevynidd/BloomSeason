@@ -11,7 +11,10 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.Transaction
 import androidx.room.Upsert
+import java.io.File
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.runBlocking
+import net.zetetic.database.sqlcipher.SupportOpenHelperFactory
 
 @Entity(tableName = "day_entry")
 data class DayEntryEntity(
@@ -94,8 +97,43 @@ abstract class BloomDatabase : RoomDatabase() {
 
         /** Eine gemeinsame Instanz für die App und den Erinnerungs-Worker. */
         fun get(context: Context): BloomDatabase = instance ?: synchronized(this) {
-            instance ?: Room.databaseBuilder(context.applicationContext, BloomDatabase::class.java, "bloomseason.db")
-                .build().also { instance = it }
+            instance ?: open(context.applicationContext).also { instance = it }
+        }
+
+        private const val NAME = "bloomseason.db"
+        private const val LEGACY_NAME = "bloomseason-plain.db"
+        private val SUFFIXES = listOf("", "-wal", "-shm", "-journal")
+
+        private fun isPlain(file: File): Boolean =
+            file.inputStream().use { input -> ByteArray(16).also { input.read(it) } }.contentEquals("SQLite format 3\u0000".toByteArray())
+
+        /** Öffnet die verschlüsselte Datenbank; eine unverschlüsselte aus Version 0.5 oder älter wird dabei übernommen. */
+        private fun open(app: Context): BloomDatabase {
+            System.loadLibrary("sqlcipher")
+            val current = app.getDatabasePath(NAME)
+            val legacy = app.getDatabasePath(LEGACY_NAME)
+            if (current.exists() && !legacy.exists() && isPlain(current)) {
+                SUFFIXES.forEach { suffix ->
+                    val from = File(current.path + suffix)
+                    if (from.exists()) from.renameTo(File(legacy.path + suffix))
+                }
+            }
+            val encrypted = Room.databaseBuilder(app, BloomDatabase::class.java, NAME)
+                .openHelperFactory(SupportOpenHelperFactory(DatabaseKey.passphrase(app)))
+                .build()
+            if (legacy.exists()) {
+                // Die alte Datei wird erst gelöscht, wenn alle Einträge in der verschlüsselten Datenbank stehen.
+                val plain = Room.databaseBuilder(app, BloomDatabase::class.java, LEGACY_NAME).build()
+                try {
+                    runBlocking {
+                        encrypted.dao().replaceAll(plain.dao().allDays(), plain.dao().allPain())
+                    }
+                } finally {
+                    plain.close()
+                }
+                SUFFIXES.forEach { File(legacy.path + it).delete() }
+            }
+            return encrypted
         }
     }
 }
