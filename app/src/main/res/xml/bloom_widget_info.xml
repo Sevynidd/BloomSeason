@@ -3,6 +3,7 @@
     android:description="@string/widget_description"
     android:initialLayout="@layout/widget_bloom"
     android:minWidth="110dp"
+    android:previewLayout="@layout/widget_bloom_preview"
     android:minHeight="110dp"
     android:resizeMode="horizontal|vertical"
     android:targetCellHeight="2"
