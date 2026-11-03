@@ -2,6 +2,7 @@ package sevynidd.bloomseason.widget
 
 import java.time.LocalDate
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Test
 import sevynidd.bloomseason.core.CycleModel
@@ -27,6 +28,7 @@ class WidgetContentTest {
         assertEquals(Season.WINTER, result.season)
         assertEquals("Tag 2", result.big)
         assertEquals("Periode läuft", result.sub)
+        assertEquals("Tag 2", result.number)
     }
 
     @Test
@@ -34,6 +36,9 @@ class WidgetContentTest {
         val result = content(periods.last().end.plusDays(10))
         assert(result.big.startsWith("in ")) { result.big }
         assertEquals("nächste Periode", result.sub)
+        assert(result.number.contains("–") || result.number.all { it.isDigit() }) { result.number }
+        assert(result.window.startsWith("voraussichtlich ")) { result.window }
+        assertNotNull(result.year)
     }
 
     @Test
@@ -41,5 +46,6 @@ class WidgetContentTest {
         val result = content(periods.last().end.plusDays(10), neutral = true)
         assertEquals("", result.sub)
         assert(result.big.startsWith("Tag ")) { result.big }
+        assertEquals("", result.window)
     }
 }

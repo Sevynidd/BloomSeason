@@ -8,8 +8,14 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.content.res.Configuration
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Path
+import android.graphics.RectF
 import android.view.View
 import android.widget.RemoteViews
+import androidx.annotation.LayoutRes
 import androidx.compose.ui.graphics.toArgb
 import java.time.LocalDate
 import kotlinx.coroutines.CoroutineScope
@@ -21,38 +27,21 @@ import sevynidd.bloomseason.R
 import sevynidd.bloomseason.core.Bleeding
 import sevynidd.bloomseason.core.CycleModel
 import sevynidd.bloomseason.core.Season
-import sevynidd.bloomseason.core.daysBetween
 import sevynidd.bloomseason.core.detectPeriods
 import sevynidd.bloomseason.data.BloomDatabase
 import sevynidd.bloomseason.data.SettingsStore
-import sevynidd.bloomseason.ui.label
+import sevynidd.bloomseason.ui.theme.SeasonColors
+import sevynidd.bloomseason.ui.theme.SeasonPalette
 import sevynidd.bloomseason.ui.theme.seasonColorsFor
 
-/** Drei Textzeilen des Widgets; `season` bestimmt die Farben, null heißt noch keine Daten. */
-data class WidgetContent(val season: Season?, val title: String, val big: String, val sub: String)
-
-/** Mit neutralem Text steht kein Wort zur Periode auf dem Startbildschirm. */
-fun widgetContent(model: CycleModel, today: LocalDate, neutral: Boolean): WidgetContent {
-    val prediction = model.prediction
-    val phase = model.phaseOn(today)
-    if (prediction == null || phase == null) return WidgetContent(null, "BloomSeason", "Noch keine Daten", "")
-    val title = phase.season.label
-    if (neutral) return WidgetContent(phase.season, title, "Tag ${phase.cycleDay}", "")
-    if (phase.season == Season.WINTER) return WidgetContent(phase.season, title, "Tag ${phase.cycleDay}", "Periode läuft")
-    val from = daysBetween(today, prediction.earliest)
-    val to = daysBetween(today, prediction.latest)
-    val big = when {
-        to < 0 -> "seit ${-to} ${days(-to)} überfällig"
-        from <= 0 -> "jetzt erwartet"
-        from == to -> "in $from ${days(from)}"
-        else -> "in $from–$to Tagen"
-    }
-    return WidgetContent(phase.season, "$title · Tag ${phase.cycleDay}", big, "nächste Periode")
+private enum class Size(@LayoutRes val layout: Int) {
+    COMPACT(R.layout.widget_bloom_small),
+    MEDIUM(R.layout.widget_bloom),
+    LARGE(R.layout.widget_bloom_large),
 }
 
-private fun days(count: Int) = if (count == 1) "Tag" else "Tagen"
-
-class BloomWidget : AppWidgetProvider() {
+/** Gemeinsame Aktualisierung; die drei Größen sind eigene Widgets in der Auswahl und unterscheiden sich nur im Layout. */
+abstract class BaseBloomWidget : AppWidgetProvider() {
     override fun onUpdate(context: Context, manager: AppWidgetManager, ids: IntArray) {
         async { updateWidgets(context) }
     }
@@ -71,7 +60,12 @@ class BloomWidget : AppWidgetProvider() {
             }
         }
     }
+}
 
+class BloomWidgetSmall : BaseBloomWidget()
+
+/** Das mittlere Widget behält den ursprünglichen Namen, damit bereits platzierte Widgets erhalten bleiben. */
+class BloomWidget : BaseBloomWidget() {
     companion object {
         /** Zeichnet alle Widgets neu, etwa nach einer Änderung der Einträge. */
         fun refresh(context: Context) {
@@ -81,27 +75,77 @@ class BloomWidget : AppWidgetProvider() {
     }
 }
 
+class BloomWidgetLarge : BaseBloomWidget()
+
 private suspend fun updateWidgets(context: Context) {
     val manager = AppWidgetManager.getInstance(context)
-    val ids = manager.getAppWidgetIds(ComponentName(context, BloomWidget::class.java))
-    if (ids.isEmpty()) return
+    val targets = listOf(
+        BloomWidgetSmall::class.java to Size.COMPACT,
+        BloomWidget::class.java to Size.MEDIUM,
+        BloomWidgetLarge::class.java to Size.LARGE,
+    ).map { (provider, size) -> manager.getAppWidgetIds(ComponentName(context, provider)) to size }
+        .filter { (ids, _) -> ids.isNotEmpty() }
+    if (targets.isEmpty()) return
+
     val today = LocalDate.now()
     val days = BloomDatabase.get(context).dao().allDays()
     val periodDays = days.filter { Bleeding.fromLevel(it.bleeding).isPeriodDay }.map { LocalDate.ofEpochDay(it.epochDay) }
     val neutral = SettingsStore(context).settings.first().neutralText
     val content = widgetContent(CycleModel(detectPeriods(periodDays), today), today, neutral)
-
     val dark = (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
-    val palette = seasonColorsFor(dark).of(content.season ?: Season.SPRING)
+    val colors = seasonColorsFor(dark)
+    targets.forEach { (ids, size) -> manager.updateAppWidget(ids, render(context, size, content, colors)) }
+}
+
+private fun render(context: Context, size: Size, content: WidgetContent, colors: SeasonColors): RemoteViews {
+    val palette = colors.of(content.season ?: Season.SPRING)
     val open = PendingIntent.getActivity(context, 0, Intent(context, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
-    val views = RemoteViews(context.packageName, R.layout.widget_bloom).apply {
+    return RemoteViews(context.packageName, size.layout).apply {
         setColorStateList(R.id.widget_root, "setBackgroundTintList", ColorStateList.valueOf(palette.container.toArgb()))
-        setTextViewText(R.id.widget_season, content.title)
-        setTextViewText(R.id.widget_big, content.big)
-        setTextViewText(R.id.widget_sub, content.sub)
-        setViewVisibility(R.id.widget_sub, if (content.sub.isEmpty()) View.GONE else View.VISIBLE)
-        listOf(R.id.widget_season, R.id.widget_big, R.id.widget_sub).forEach { setTextColor(it, palette.onContainer.toArgb()) }
+        val (season, big, sub) = when (size) {
+            Size.COMPACT -> Triple(content.name, content.number, content.unit)
+            else -> Triple(content.title, content.big, content.sub)
+        }
+        setText(R.id.widget_season, season, palette)
+        setText(R.id.widget_big, big, palette)
+        setText(R.id.widget_sub, sub, palette)
+        if (size == Size.LARGE) {
+            setText(R.id.widget_window, content.window, palette)
+            val year = content.year
+            setViewVisibility(R.id.widget_bar, if (year == null) View.GONE else View.VISIBLE)
+            if (year != null) setImageViewBitmap(R.id.widget_bar, yearBar(year, colors, palette))
+        }
         setOnClickPendingIntent(R.id.widget_root, open)
     }
-    manager.updateAppWidget(ids, views)
+}
+
+private fun RemoteViews.setText(id: Int, text: String, palette: SeasonPalette) {
+    setTextViewText(id, text)
+    setTextColor(id, palette.onContainer.toArgb())
+    setViewVisibility(id, if (text.isEmpty()) View.GONE else View.VISIBLE)
+}
+
+/** Der Zyklus als Band in den vier Jahreszeitenfarben, ein Punkt markiert den heutigen Tag. */
+private fun yearBar(year: YearRun, colors: SeasonColors, palette: SeasonPalette): Bitmap {
+    val width = 720
+    val height = 40
+    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+    val bar = RectF(0f, 12f, width.toFloat(), 28f)
+    canvas.save()
+    canvas.clipPath(Path().apply { addRoundRect(bar, 8f, 8f, Path.Direction.CW) })
+    year.spans.forEach { span ->
+        paint.color = colors.of(span.season).accent.toArgb()
+        val left = (span.firstDay - 1).toFloat() / year.length * width
+        val right = span.lastDay.toFloat() / year.length * width
+        canvas.drawRect(left, bar.top, right, bar.bottom, paint)
+    }
+    canvas.restore()
+    val x = ((year.day - 0.5f) / year.length * width).coerceIn(20f, width - 20f)
+    paint.color = palette.container.toArgb()
+    canvas.drawCircle(x, height / 2f, 19f, paint)
+    paint.color = palette.onContainer.toArgb()
+    canvas.drawCircle(x, height / 2f, 13f, paint)
+    return bitmap
 }

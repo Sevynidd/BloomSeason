@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">BloomSeason</string>
+    <string name="widget_label_small">Kompakt</string>
+    <string name="widget_label">Standard</string>
+    <string name="widget_label_large">Groß mit Jahreslauf</string>
+    <string name="widget_description_small">Jahreszeit und Tage bis zur nächsten Periode, kompakt</string>
     <string name="widget_description">Aktuelle Jahreszeit und Tage bis zur nächsten Periode</string>
+    <string name="widget_description_large">Jahreszeit, Zeitfenster und der Zyklus als Band in den vier Jahreszeiten</string>
 </resources>
