@@ -49,8 +49,8 @@ Die Metapher ist das **zentrale Gestaltungsmerkmal** der App: Startseite, Kalend
 - Export und Import der Daten (JSON/CSV), Backup-Datei vom Nutzer kontrolliert
 
 ### Später
-- Weitere Werte, falls gewünscht: Stimmung, Energie, Schlaf, Temperatur, Zervixschleim, Medikamente, Freitext-Notiz (im MVP bewusst nicht enthalten)
-- Verhütungs-Unterstützung (z. B. Erinnerung an die Pilleneinnahme oder Hinweis auf fruchtbare Tage). Eine reine Kalendervorhersage ist als alleinige Verhütungsmethode **unzuverlässig**; bevor das kommt, muss geklärt werden, was die App genau leisten soll und wie sie das ehrlich kommuniziert.
+- Weitere Werte, falls gewünscht: Stimmung, Energie, Schlaf, Temperatur, Zervixschleim, Freitext-Notiz (im MVP bewusst nicht enthalten)
+- Verhütungs-Unterstützung (z. B. Hinweis auf fruchtbare Tage). Eine reine Kalendervorhersage ist als alleinige Verhütungsmethode **unzuverlässig**; bevor das kommt, muss geklärt werden, was die App genau leisten soll und wie sie das ehrlich kommuniziert.
 - Verschlüsseltes Backup (Datei oder eigener Sync)
 - Partner-Freigabe (nur falls irgendwann gewünscht, nur Teilinformationen)
 
@@ -93,11 +93,11 @@ Entschieden: Der Nutzer kennt Kotlin und Compose bereits und ist der einzige Nut
 - **Backup:** Export als verschlüsselte Datei in einen frei gewählten Ordner auf dem Gerät (Storage Access Framework). Wer den Ordner weitersynchronisiert (z. B. Syncthing, Nextcloud), tut das außerhalb der App.
 - **Tests:** Unit-Tests für Vorhersagelogik, UI-Tests nur für die Kernflows
 
-### Stand der Umsetzung (v0.11)
+### Stand der Umsetzung (v0.12)
 
 Das Design „Saisonlicht“ ([design-opus.html](design-opus.html)) ist in Compose umgesetzt, Hell und Dunkel folgen dem System, die aktuelle Jahreszeit bestimmt die Akzentfarbe.
 
-- **Fertig:** Vorhersagelogik mit Tests (`core`), Heute, Kalender, Tag eintragen (beginnt rückwirkend eine Periode, werden die folgenden Tage in durchschnittlicher Länge vorbelegt), Monatswechsel per Wischen, „Periode endete an diesem Tag“ im Kalender, Widgets in drei Größen (kompakt, standard, groß mit Jahreslauf), wöchentliches automatisches Backup (Passwort verschlüsselt im Keystore, die letzten 8 bleiben), Statistik und Muster, App-Sperre über die Bildschirmsperre des Geräts (beim Öffnen und nach 15 Sekunden im Hintergrund, mit Schutz vor Screenshots), Erinnerungen als Benachrichtigung (Uhrzeit einstellbar, optional neutraler Text), verschlüsseltes Backup (Passwort, AES-256-GCM) in einen frei gewählten Ordner, Export und Import als JSON oder CSV, Datenbank mit SQLCipher verschlüsselt (Schlüssel im Android Keystore), Beispieldaten im Debug-Build.
+- **Fertig:** Vorhersagelogik mit Tests (`core`), Heute, Kalender, Tag eintragen (beginnt rückwirkend eine Periode, werden die folgenden Tage in durchschnittlicher Länge vorbelegt), Monatswechsel per Wischen, „Periode endete an diesem Tag“ im Kalender, Widgets in drei Größen (kompakt, standard, groß mit Jahreslauf), Schnelleinstellungs-Kachel für den Periodenbeginn heute, Statistik mit Verlauf über die Zeit und „Vorhersage gegen Wirklichkeit“, PDF-Bericht für den Arzttermin, wöchentliches automatisches Backup (Passwort verschlüsselt im Keystore, die letzten 8 bleiben), Statistik und Muster, App-Sperre über die Bildschirmsperre des Geräts (beim Öffnen und nach 15 Sekunden im Hintergrund, mit Schutz vor Screenshots), Erinnerungen als Benachrichtigung (Uhrzeit einstellbar, optional neutraler Text), verschlüsseltes Backup (Passwort, AES-256-GCM) in einen frei gewählten Ordner, Export und Import als JSON oder CSV, Datenbank mit SQLCipher verschlüsselt (Schlüssel im Android Keystore), Beispieldaten im Debug-Build.
 - **Noch nicht umgesetzt:** Weitere Werte (Stimmung, Schlaf, …), siehe „Später“. Fingerabdruck und Gesicht bei der App-Sperre sind nur auf dem Emulator mit PIN getestet.
 - **Abweichung vom Entwurf:** In der Periode zeigt die Heute-Seite keinen Knopf „Periode beendet“. Eine Periode ergibt sich aus den erfassten Blutungstagen (ein freier Tag Lücke ist erlaubt).
 

@@ -11,6 +11,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Download
+import androidx.compose.material.icons.outlined.MedicalInformation
 import androidx.compose.material.icons.outlined.FolderOpen
 import androidx.compose.material.icons.outlined.Upload
 import androidx.compose.material3.AlertDialog
@@ -46,6 +47,7 @@ private sealed interface Dialog {
     data object AutoPassword : Dialog
     data class RestorePassword(val file: Uri) : Dialog
     data object ExportChoice : Dialog
+    data object ReportRange : Dialog
 }
 
 /** Die Zeilen der Gruppe „Daten“: Ordner, Sicherung erstellen und einspielen, Export und Import. */
@@ -100,6 +102,12 @@ fun BackupRows(
         if (uri != null) run { backup.export(uri, ExportFormat.CSV); "CSV exportiert." }
     }
 
+    var reportMonths by remember { mutableStateOf<Int?>(null) }
+    val exportReport = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/pdf")) { uri ->
+        onExternal(false)
+        if (uri != null) run { backup.exportReport(uri, reportMonths); "Bericht gespeichert." }
+    }
+
     val folder = settings.backupFolder.takeIf { it.isNotEmpty() }?.let(Uri::parse)
     SettingRow(
         Icons.Outlined.FolderOpen,
@@ -133,6 +141,12 @@ fun BackupRows(
         "Exportieren / Importieren",
         "JSON oder CSV, unverschlüsselt",
         { dialog = Dialog.ExportChoice },
+    ) { Chevron() }
+    SettingRow(
+        Icons.Outlined.MedicalInformation,
+        "Bericht für den Arzttermin",
+        "PDF mit Zyklen und Schmerzen, unverschlüsselt",
+        { dialog = Dialog.ReportRange },
     ) { Chevron() }
 
     when (val current = dialog) {
@@ -168,6 +182,29 @@ fun BackupRows(
             dialog = null
             run { "${backup.restore(current.file, password)} Tage wiederhergestellt." }
         }
+        Dialog.ReportRange -> AlertDialog(
+            onDismissRequest = { dialog = null },
+            title = { Text("Bericht für den Arzttermin") },
+            text = {
+                Text(
+                    "Das PDF enthält Zykluslängen, Periodendauer, Blutungsstärke und Schmerzen, aber keine einzelnen Tage. Es ist nicht verschlüsselt. Für welchen Zeitraum?",
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            },
+            confirmButton = {
+                Column {
+                    listOf("Letzte 6 Monate" to 6, "Letzte 12 Monate" to 12, "Alle erfassten Zyklen" to null).forEach { (label, months) ->
+                        TextButton({
+                            dialog = null
+                            reportMonths = months
+                            onExternal(true)
+                            exportReport.launch("bloomseason-bericht-${java.time.LocalDate.now()}.pdf")
+                        }) { Text(label) }
+                    }
+                }
+            },
+            dismissButton = { TextButton({ dialog = null }) { Text("Abbrechen") } },
+        )
         Dialog.ExportChoice -> AlertDialog(
             onDismissRequest = { dialog = null },
             title = { Text("Exportieren / Importieren") },

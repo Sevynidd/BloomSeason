@@ -3,7 +3,13 @@ package sevynidd.bloomseason.ui
 import android.Manifest
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.remember
+import android.app.StatusBarManager
 import android.app.TimePickerDialog
+import android.content.ComponentName
+import android.graphics.drawable.Icon as AndroidIcon
+import androidx.compose.material.icons.outlined.Widgets
+import sevynidd.bloomseason.R
+import sevynidd.bloomseason.tile.PeriodTileService
 import android.content.pm.ApplicationInfo
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -81,6 +87,24 @@ fun SettingsScreen(
         ).show()
     }
 
+    // Android fragt selbst nach, ob die Kachel in die Schnelleinstellungen soll.
+    fun addTile() {
+        val manager = context.getSystemService(StatusBarManager::class.java)
+        manager.requestAddTileService(
+            ComponentName(context, PeriodTileService::class.java),
+            "Periode",
+            AndroidIcon.createWithResource(context, R.drawable.ic_notification),
+            context.mainExecutor,
+        ) { result ->
+            when (result) {
+                StatusBarManager.TILE_ADD_REQUEST_RESULT_TILE_ADDED -> onMessage("Kachel hinzugefügt.")
+                StatusBarManager.TILE_ADD_REQUEST_RESULT_TILE_ALREADY_ADDED -> onMessage("Die Kachel ist schon in den Schnelleinstellungen.")
+                StatusBarManager.TILE_ADD_REQUEST_RESULT_TILE_NOT_ADDED -> Unit
+                else -> onMessage("Die Kachel konnte nicht hinzugefügt werden. Ziehe sie in den Schnelleinstellungen manuell dazu.")
+            }
+        }
+    }
+
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp),
@@ -119,7 +143,10 @@ fun SettingsScreen(
         }
 
         SectionLabel("App", Modifier.padding(top = 6.dp))
-        SettingsGroup { SettingRow(Icons.Outlined.Info, "Version", version) {} }
+        SettingsGroup {
+            SettingRow(Icons.Outlined.Widgets, "Schnellkachel", "Periodenbeginn heute mit einem Tipp eintragen", ::addTile) { Chevron() }
+            SettingRow(Icons.Outlined.Info, "Version", version) {}
+        }
 
         if (debuggable) {
             SectionLabel("Debug", Modifier.padding(top = 6.dp))

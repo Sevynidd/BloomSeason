@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">BloomSeason</string>
+    <string name="tile_label">Periode</string>
     <string name="widget_label_small">Kompakt</string>
     <string name="widget_label">Standard</string>
     <string name="widget_label_large">Groß mit Jahreslauf</string>

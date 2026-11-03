@@ -89,6 +89,9 @@ fun StatsScreen(state: AppState) {
             }
         }
 
+        HistoryCard(state)
+        PredictionCard(state)
+
         BloomCard {
             Row(Modifier.fillMaxWidth().padding(bottom = 6.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Bottom) {
                 Text("Schmerzen je Jahreszeit", style = MaterialTheme.typography.titleMedium)
