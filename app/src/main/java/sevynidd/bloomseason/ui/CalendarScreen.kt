@@ -38,6 +38,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -90,6 +91,7 @@ fun CalendarScreen(
     selected: LocalDate,
     onSelect: (LocalDate) -> Unit,
     onEdit: (LocalDate) -> Unit,
+    onEndPeriod: (LocalDate) -> Unit,
 ) {
     val today = state.today
     val month = YearMonth.of(monthIndex / 12, monthIndex % 12 + 1)
@@ -179,7 +181,7 @@ fun CalendarScreen(
         }
 
         Spacer(Modifier.height(4.dp))
-        DaySheet(state, selected, onEdit)
+        DaySheet(state, selected, onEdit, onEndPeriod)
         Spacer(Modifier.height(8.dp))
     }
 }
@@ -316,7 +318,7 @@ private fun SeasonLine(colors: SeasonColors) {
 }
 
 @Composable
-private fun DaySheet(state: AppState, date: LocalDate, onEdit: (LocalDate) -> Unit) {
+private fun DaySheet(state: AppState, date: LocalDate, onEdit: (LocalDate) -> Unit, onEndPeriod: (LocalDate) -> Unit) {
     val phase = state.model.phaseOn(date)
     val bleeding = state.bleeding[date]
     val pain = state.pain[date].orEmpty()
@@ -358,6 +360,16 @@ private fun DaySheet(state: AppState, date: LocalDate, onEdit: (LocalDate) -> Un
                 Icon(Icons.Outlined.Edit, contentDescription = null, Modifier.size(18.dp))
                 Spacer(Modifier.width(8.dp))
                 Text("Tag bearbeiten")
+            }
+            // Läuft die Periode nach diesem Tag weiter, kann sie hier beendet werden.
+            val period = state.model.periods.firstOrNull { date >= it.start && date <= it.end }
+            if (period != null && date.isBefore(period.end)) {
+                OutlinedButton(
+                    onClick = { onEndPeriod(date) },
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp).height(48.dp),
+                ) {
+                    Text("Periode endete an diesem Tag")
+                }
             }
         }
     }

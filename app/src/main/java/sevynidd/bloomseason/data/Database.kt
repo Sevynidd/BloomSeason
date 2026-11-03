@@ -49,6 +49,9 @@ abstract class BloomDao {
     @Query("DELETE FROM day_entry WHERE epochDay = :epochDay")
     abstract suspend fun deleteDay(epochDay: Long)
 
+    @Query("DELETE FROM day_entry WHERE epochDay BETWEEN :from AND :to AND bleeding >= :minBleeding")
+    abstract suspend fun deleteBleeding(from: Long, to: Long, minBleeding: Int)
+
     @Query("DELETE FROM pain_entry WHERE epochDay = :epochDay")
     abstract suspend fun deletePain(epochDay: Long)
 

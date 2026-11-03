@@ -20,6 +20,7 @@ data class AppSettings(
     /** Vom Nutzer gewählter Ordner (SAF-Tree-URI) für Sicherungen, leer solange keiner gewählt ist. */
     val backupFolder: String = "",
     val lastBackup: String = "",
+    val autoBackup: Boolean = false,
 )
 
 class SettingsStore(private val context: Context) {
@@ -31,6 +32,7 @@ class SettingsStore(private val context: Context) {
         val appLock = booleanPreferencesKey("app_lock")
         val backupFolder = stringPreferencesKey("backup_folder")
         val lastBackup = stringPreferencesKey("last_backup")
+        val autoBackup = booleanPreferencesKey("auto_backup")
     }
 
     val settings: Flow<AppSettings> = context.dataStore.data.map { it.toSettings() }
@@ -45,6 +47,7 @@ class SettingsStore(private val context: Context) {
             prefs[Keys.appLock] = next.appLock
             prefs[Keys.backupFolder] = next.backupFolder
             prefs[Keys.lastBackup] = next.lastBackup
+            prefs[Keys.autoBackup] = next.autoBackup
         }
     }
 
@@ -56,5 +59,6 @@ class SettingsStore(private val context: Context) {
         appLock = this[Keys.appLock] ?: false,
         backupFolder = this[Keys.backupFolder] ?: "",
         lastBackup = this[Keys.lastBackup] ?: "",
+        autoBackup = this[Keys.autoBackup] ?: false,
     )
 }

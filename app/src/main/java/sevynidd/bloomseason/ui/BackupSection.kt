@@ -16,6 +16,8 @@ import androidx.compose.material.icons.outlined.Upload
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
+import androidx.compose.material.icons.outlined.Autorenew
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -41,6 +43,7 @@ private const val MIN_PASSWORD = 8
 
 private sealed interface Dialog {
     data object CreatePassword : Dialog
+    data object AutoPassword : Dialog
     data class RestorePassword(val file: Uri) : Dialog
     data object ExportChoice : Dialog
 }
@@ -110,6 +113,15 @@ fun BackupRows(
         lastBackupText(settings.lastBackup) ?: "verschlüsselt mit Passwort",
         { if (folder == null) onMessage("Lege zuerst einen Backup-Ordner fest.") else dialog = Dialog.CreatePassword },
     ) { Chevron() }
+    SettingRow(Icons.Outlined.Autorenew, "Automatisch sichern", "wöchentlich, die letzten 8 bleiben") {
+        Switch(settings.autoBackup, { on ->
+            when {
+                !on -> run { backup.disableAutomatic(); "Automatische Sicherung aus." }
+                folder == null -> onMessage("Lege zuerst einen Backup-Ordner fest.")
+                else -> dialog = Dialog.AutoPassword
+            }
+        })
+    }
     SettingRow(
         Icons.Outlined.Upload,
         "Backup einspielen",
@@ -134,6 +146,17 @@ fun BackupRows(
             dialog = null
             val target = folder ?: return@PasswordDialog
             run { "Gespeichert: ${backup.createBackup(target, password)}" }
+        }
+        Dialog.AutoPassword -> PasswordDialog(
+            title = "Automatisch sichern",
+            text = "Das Passwort schützt die Dateien. Damit die App im Hintergrund sichern kann, wird es verschlüsselt auf diesem Gerät gespeichert. Merke es dir trotzdem, du brauchst es zum Wiederherstellen.",
+            confirmRepeat = true,
+            confirmLabel = "Einschalten",
+            onDismiss = { dialog = null },
+        ) { password ->
+            dialog = null
+            val target = folder ?: return@PasswordDialog
+            run { "Eingeschaltet, erste Sicherung: ${backup.enableAutomatic(target, password)}" }
         }
         is Dialog.RestorePassword -> PasswordDialog(
             title = "Backup einspielen",

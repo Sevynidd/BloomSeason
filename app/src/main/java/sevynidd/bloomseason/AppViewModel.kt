@@ -18,6 +18,8 @@ import kotlinx.coroutines.launch
 import sevynidd.bloomseason.core.Bleeding
 import sevynidd.bloomseason.core.CycleModel
 import sevynidd.bloomseason.core.DEFAULT_PERIOD_LENGTH
+import sevynidd.bloomseason.data.backup.AutoBackup
+import sevynidd.bloomseason.widget.BloomWidget
 import kotlin.math.roundToInt
 import sevynidd.bloomseason.core.PainSample
 import sevynidd.bloomseason.core.detectPeriods
@@ -85,6 +87,13 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                 .distinctUntilChanged()
                 .collect { ReminderScheduler.update(application, settingsStore.settings.first()) }
         }
+        viewModelScope.launch {
+            settingsStore.settings.map { it.autoBackup }.distinctUntilChanged().collect { AutoBackup.schedule(application, it) }
+        }
+        // Das Widget zeigt dieselben Daten wie die Startseite und wird bei jeder Änderung neu gezeichnet.
+        viewModelScope.launch {
+            state.map { Triple(it.bleeding, it.settings.neutralText, it.today) }.distinctUntilChanged().collect { BloomWidget.refresh(application) }
+        }
     }
 
     private val _unlocked = MutableStateFlow(false)
@@ -132,6 +141,15 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                     .map { DayEntryEntity(it.toEpochDay(), bleeding.level) }
                 if (prefill.isNotEmpty()) dao.insertDays(prefill)
             }
+        }
+    }
+
+    /** Beendet die Periode an diesem Tag: spätere Blutungstage der Periode werden entfernt, Schmerzen bleiben. */
+    fun endPeriodOn(date: LocalDate) {
+        val period = state.value.model.periods.firstOrNull { date >= it.start && date <= it.end } ?: return
+        if (!date.isBefore(period.end)) return
+        viewModelScope.launch {
+            dao.deleteBleeding(date.plusDays(1).toEpochDay(), period.end.toEpochDay(), Bleeding.LIGHT.level)
         }
     }
 

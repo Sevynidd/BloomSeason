@@ -30,13 +30,13 @@ object DatabaseKey {
         return fresh
     }
 
-    private fun wrap(plain: ByteArray): ByteArray {
+    internal fun wrap(plain: ByteArray): ByteArray {
         val cipher = Cipher.getInstance("AES/GCM/NoPadding")
         cipher.init(Cipher.ENCRYPT_MODE, keystoreKey())
         return cipher.iv + cipher.doFinal(plain)
     }
 
-    private fun unwrap(bytes: ByteArray): ByteArray {
+    internal fun unwrap(bytes: ByteArray): ByteArray {
         val cipher = Cipher.getInstance("AES/GCM/NoPadding")
         cipher.init(Cipher.DECRYPT_MODE, keystoreKey(), GCMParameterSpec(128, bytes, 0, IV_BYTES))
         return cipher.doFinal(bytes, IV_BYTES, bytes.size - IV_BYTES)

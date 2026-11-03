@@ -58,7 +58,10 @@ private val LightSeasons = SeasonColors(
     autumn = palette(0xFF9B4A28, 0xFFFFFFFF, 0xFFF0DDCC, 0xFF3A1406),
 )
 
-private val DarkNeutral = Neutral(nav = Color(0xFF1A1917), bar = Color(0xFF4A453F))
+/** Die festen Jahreszeitenfarben auch außerhalb von Compose, etwa für das Widget. */
+fun seasonColorsFor(dark: Boolean): SeasonColors = if (dark) DarkSeasons else LightSeasons
+
+private val DarkNeutral =Neutral(nav = Color(0xFF1A1917), bar = Color(0xFF4A453F))
 private val LightNeutral = Neutral(nav = Color(0xFFECE6DE), bar = Color(0xFFD3CABF))
 
 val LocalSeasonColors = staticCompositionLocalOf { DarkSeasons }
