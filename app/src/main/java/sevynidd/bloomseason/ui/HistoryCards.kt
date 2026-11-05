@@ -53,10 +53,10 @@ private const val MAX_CHECKS = 8
 private val MonthYear = DateTimeFormatter.ofPattern("MMM yy", Locale.GERMAN)
 private val DayMonth = DateTimeFormatter.ofPattern("d.M.", Locale.GERMAN)
 
-private enum class Metric(val label: String, val unit: String) {
-    CYCLE("Zyklus", "Tage"),
-    PERIOD("Periode", "Tage"),
-    PAIN("Schmerz", "von 10"),
+private enum class Metric(val label: String, val unit: String, val axis: String) {
+    CYCLE("Zyklus", "Tage", "Zykluslänge in Tagen"),
+    PERIOD("Periode", "Tage", "Periodendauer in Tagen"),
+    PAIN("Schmerz", "von 10", "Schmerz, Mittel je Zyklus (0–10)"),
 }
 
 /** Zykluslänge, Periodendauer und Schmerzstärke aller erfassten Zyklen als Linie über die Zeit. */
@@ -91,7 +91,20 @@ fun HistoryCard(state: AppState) {
                 modifier = Modifier.padding(vertical = 16.dp),
             )
         } else {
+            Text(
+                "↑ ${metric.axis}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 12.dp),
+            )
             LineChart(points, if (metric == Metric.PAIN) 0.0..10.0 else null, metric)
+            Text(
+                "Beginn des Zyklus →",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.End,
+            )
         }
     }
 }
@@ -105,7 +118,7 @@ private fun LineChart(points: List<Pair<LocalDate, Double>>, fixedRange: ClosedF
     val description = "Verlauf ${metric.label}: " + points.joinToString(", ") { (date, value) ->
         "${date.format(MonthYear)} ${decimal(value)}"
     } + ". Durchschnitt ${decimal(mean)}."
-    Canvas(Modifier.fillMaxWidth().height(170.dp).padding(top = 12.dp).semantics { contentDescription = description }) {
+    Canvas(Modifier.fillMaxWidth().height(170.dp).padding(top = 8.dp).semantics { contentDescription = description }) {
         val low = fixedRange?.start?.toFloat() ?: (floor(values.min()) - 1).toFloat()
         val high = fixedRange?.endInclusive?.toFloat() ?: (ceil(values.max()) + 1).toFloat()
         val small = TextStyle(color = scheme.onSurfaceVariant, fontSize = 11.sp, fontWeight = FontWeight.Medium)
