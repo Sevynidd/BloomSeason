@@ -50,7 +50,7 @@ fun widgetContent(model: CycleModel, today: LocalDate, neutral: Boolean): Widget
     if (phase.season == Season.WINTER) {
         val remaining = (prediction.periodLength - phase.cycleDay).coerceAtLeast(0)
         val end = if (remaining == 0) "Ende bald erwartet" else "voraussichtliches Ende in ${maxOf(remaining - 1, 0)}–${remaining + 1} Tagen"
-        return WidgetContent(phase.season, name, name, "Tag ${phase.cycleDay}", "Periode läuft", "Tag ${phase.cycleDay}", "Periode läuft", end, year)
+        return WidgetContent(phase.season, name, name, "Tag ${phase.cycleDay}", "Periode Tag ${phase.cycleDay}", "Tag ${phase.cycleDay}", "Periode Tag ${phase.cycleDay}", end, year)
     }
     val from = daysBetween(today, prediction.earliest)
     val to = daysBetween(today, prediction.latest)

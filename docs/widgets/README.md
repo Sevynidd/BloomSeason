@@ -73,7 +73,7 @@ Band 300 × 16 mit Radius 8, 20 vom linken Rand. Die Abschnitte teilen den Zyklu
 | Genau ein Tag | „1“ / „Tag bis zur Periode“ | „in 1 Tag“ |
 | Jetzt erwartet | „jetzt“ / „erwartet“ | „jetzt erwartet“ |
 | Überfällig | „+3“ / „überfällig“ | „seit 3 Tagen überfällig“ |
-| Periode läuft | „Tag 3“ / „Periode läuft“ | „Tag 3“ / „Periode läuft“, groß zusätzlich „voraussichtliches Ende in 2–4 Tagen“ |
+| Periode läuft | „Tag 3“ / „Periode Tag 3“ | „Tag 3“ / „Periode Tag 3“, groß zusätzlich „voraussichtliches Ende in 2–4 Tagen“ |
 | Neutraler Text | „Tag 7“, keine Unterzeile | „Tag 7“, keine Unterzeile |
 | Noch keine Daten | „–“ / „keine Daten“ | „Noch keine Daten“ |
 

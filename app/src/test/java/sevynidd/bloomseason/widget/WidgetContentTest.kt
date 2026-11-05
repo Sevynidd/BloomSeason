@@ -27,7 +27,7 @@ class WidgetContentTest {
         val result = content(periods.last().start.plusDays(1))
         assertEquals(Season.WINTER, result.season)
         assertEquals("Tag 2", result.big)
-        assertEquals("Periode läuft", result.sub)
+        assertEquals("Periode Tag 2", result.sub)
         assertEquals("Tag 2", result.number)
     }
 
