@@ -93,7 +93,7 @@ Entschieden: Der Nutzer kennt Kotlin und Compose bereits und ist der einzige Nut
 - **Backup:** Export als verschlüsselte Datei in einen frei gewählten Ordner auf dem Gerät (Storage Access Framework). Wer den Ordner weitersynchronisiert (z. B. Syncthing, Nextcloud), tut das außerhalb der App.
 - **Tests:** Unit-Tests für Vorhersagelogik, UI-Tests nur für die Kernflows
 
-### Stand der Umsetzung (v0.12)
+### Stand der Umsetzung (v0.13)
 
 Das Design „Saisonlicht“ ([design-opus.html](design-opus.html)) ist in Compose umgesetzt, Hell und Dunkel folgen dem System, die aktuelle Jahreszeit bestimmt die Akzentfarbe.
 

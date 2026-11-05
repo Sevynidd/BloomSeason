@@ -16,7 +16,6 @@ import android.graphics.RectF
 import android.view.View
 import android.widget.RemoteViews
 import androidx.annotation.LayoutRes
-import androidx.compose.ui.graphics.toArgb
 import java.time.LocalDate
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,14 +29,11 @@ import sevynidd.bloomseason.core.Season
 import sevynidd.bloomseason.core.detectPeriods
 import sevynidd.bloomseason.data.BloomDatabase
 import sevynidd.bloomseason.data.SettingsStore
-import sevynidd.bloomseason.ui.theme.SeasonColors
-import sevynidd.bloomseason.ui.theme.SeasonPalette
-import sevynidd.bloomseason.ui.theme.seasonColorsFor
 
-private enum class Size(@LayoutRes val layout: Int) {
-    COMPACT(R.layout.widget_bloom_small),
-    MEDIUM(R.layout.widget_bloom),
-    LARGE(R.layout.widget_bloom_large),
+private enum class Size(@LayoutRes val layout: Int, val artResolution: Float) {
+    COMPACT(R.layout.widget_bloom_small, 4f),
+    MEDIUM(R.layout.widget_bloom, 5f),
+    LARGE(R.layout.widget_bloom_large, 6f),
 }
 
 /** Gemeinsame Aktualisierung; die drei Größen sind eigene Widgets in der Auswahl und unterscheiden sich nur im Layout. */
@@ -93,40 +89,41 @@ private suspend fun updateWidgets(context: Context) {
     val neutral = SettingsStore(context).settings.first().neutralText
     val content = widgetContent(CycleModel(detectPeriods(periodDays), today), today, neutral)
     val dark = (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
-    val colors = seasonColorsFor(dark)
-    targets.forEach { (ids, size) -> manager.updateAppWidget(ids, render(context, size, content, colors)) }
+    targets.forEach { (ids, size) -> manager.updateAppWidget(ids, render(context, size, content, dark)) }
 }
 
-private fun render(context: Context, size: Size, content: WidgetContent, colors: SeasonColors): RemoteViews {
-    val palette = colors.of(content.season ?: Season.SPRING)
+private fun render(context: Context, size: Size, content: WidgetContent, dark: Boolean): RemoteViews {
+    val season = content.season ?: Season.SPRING
+    val look = widgetLook(season, dark, large = size == Size.LARGE)
     val open = PendingIntent.getActivity(context, 0, Intent(context, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
     return RemoteViews(context.packageName, size.layout).apply {
-        setColorStateList(R.id.widget_root, "setBackgroundTintList", ColorStateList.valueOf(palette.container.toArgb()))
-        val (season, big, sub) = when (size) {
+        setColorStateList(R.id.widget_root, "setBackgroundTintList", ColorStateList.valueOf(look.background))
+        setImageViewBitmap(R.id.widget_art, seasonArt(season, look, size.artResolution))
+        val (name, big, sub) = when (size) {
             Size.COMPACT -> Triple(content.name, content.number, content.unit)
             else -> Triple(content.title, content.big, content.sub)
         }
-        setText(R.id.widget_season, season, palette)
-        setText(R.id.widget_big, big, palette)
-        setText(R.id.widget_sub, sub, palette)
+        setText(R.id.widget_season, name, look)
+        setText(R.id.widget_big, big, look)
+        setText(R.id.widget_sub, sub, look)
         if (size == Size.LARGE) {
-            setText(R.id.widget_window, content.window, palette)
+            setText(R.id.widget_window, content.window, look)
             val year = content.year
             setViewVisibility(R.id.widget_bar, if (year == null) View.GONE else View.VISIBLE)
-            if (year != null) setImageViewBitmap(R.id.widget_bar, yearBar(year, colors, palette))
+            if (year != null) setImageViewBitmap(R.id.widget_bar, yearBar(year, barColors(dark), look))
         }
         setOnClickPendingIntent(R.id.widget_root, open)
     }
 }
 
-private fun RemoteViews.setText(id: Int, text: String, palette: SeasonPalette) {
+private fun RemoteViews.setText(id: Int, text: String, look: WidgetLook) {
     setTextViewText(id, text)
-    setTextColor(id, palette.onContainer.toArgb())
+    setTextColor(id, look.text)
     setViewVisibility(id, if (text.isEmpty()) View.GONE else View.VISIBLE)
 }
 
 /** Der Zyklus als Band in den vier Jahreszeitenfarben, ein Punkt markiert den heutigen Tag. */
-private fun yearBar(year: YearRun, colors: SeasonColors, palette: SeasonPalette): Bitmap {
+private fun yearBar(year: YearRun, colors: IntArray, look: WidgetLook): Bitmap {
     val width = 720
     val height = 40
     val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
@@ -136,16 +133,16 @@ private fun yearBar(year: YearRun, colors: SeasonColors, palette: SeasonPalette)
     canvas.save()
     canvas.clipPath(Path().apply { addRoundRect(bar, 8f, 8f, Path.Direction.CW) })
     year.spans.forEach { span ->
-        paint.color = colors.of(span.season).accent.toArgb()
+        paint.color = colors[span.season.ordinal]
         val left = (span.firstDay - 1).toFloat() / year.length * width
         val right = span.lastDay.toFloat() / year.length * width
         canvas.drawRect(left, bar.top, right, bar.bottom, paint)
     }
     canvas.restore()
     val x = ((year.day - 0.5f) / year.length * width).coerceIn(20f, width - 20f)
-    paint.color = palette.container.toArgb()
+    paint.color = look.background
     canvas.drawCircle(x, height / 2f, 19f, paint)
-    paint.color = palette.onContainer.toArgb()
+    paint.color = look.dot
     canvas.drawCircle(x, height / 2f, 13f, paint)
     return bitmap
 }
