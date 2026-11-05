@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">
+<g id="widget-compact-winter-light" transform="translate(0 0)" font-family="Roboto, 'Helvetica Neue', Arial, sans-serif" fill="#142D4A">
+  <clipPath id="clip-compact-winter-light-0-0"><rect width="160" height="160" rx="28"/></clipPath>
+  <rect id="background" width="160" height="160" rx="28" fill="#D8E4F3"/>
+  <g id="illustration" clip-path="url(#clip-compact-winter-light-0-0)">
+    <g transform="translate(106 8) scale(.7)">
+      <g transform="translate(27 33) scale(1)" stroke="#3B5F8C" stroke-width="2.6" stroke-linecap="round" fill="none">
+        <g transform="rotate(0)"><path d="M0 0 V-19 M0 -11 L-5 -16 M0 -11 L5 -16"/></g>
+        <g transform="rotate(60)"><path d="M0 0 V-19 M0 -11 L-5 -16 M0 -11 L5 -16"/></g>
+        <g transform="rotate(120)"><path d="M0 0 V-19 M0 -11 L-5 -16 M0 -11 L5 -16"/></g>
+        <g transform="rotate(180)"><path d="M0 0 V-19 M0 -11 L-5 -16 M0 -11 L5 -16"/></g>
+        <g transform="rotate(240)"><path d="M0 0 V-19 M0 -11 L-5 -16 M0 -11 L5 -16"/></g>
+        <g transform="rotate(300)"><path d="M0 0 V-19 M0 -11 L-5 -16 M0 -11 L5 -16"/></g>
+      </g>
+      <g transform="translate(50 14) scale(.42)" stroke="#3B5F8C" stroke-width="2.6" stroke-linecap="round" fill="none">
+        <g transform="rotate(0)"><path d="M0 0 V-19 M0 -11 L-5 -16 M0 -11 L5 -16"/></g>
+        <g transform="rotate(60)"><path d="M0 0 V-19 M0 -11 L-5 -16 M0 -11 L5 -16"/></g>
+        <g transform="rotate(120)"><path d="M0 0 V-19 M0 -11 L-5 -16 M0 -11 L5 -16"/></g>
+        <g transform="rotate(180)"><path d="M0 0 V-19 M0 -11 L-5 -16 M0 -11 L5 -16"/></g>
+        <g transform="rotate(240)"><path d="M0 0 V-19 M0 -11 L-5 -16 M0 -11 L5 -16"/></g>
+        <g transform="rotate(300)"><path d="M0 0 V-19 M0 -11 L-5 -16 M0 -11 L5 -16"/></g>
+      </g>
+      <circle cx="49" cy="50" r="2.2" fill="#3B5F8C" opacity=".7"/>
+      <circle cx="13" cy="54" r="1.8" fill="#3B5F8C" opacity=".6"/>
+    </g>
+  </g>
+  <text id="season" x="80" y="79" font-size="13" text-anchor="middle">Winter</text>
+  <text id="number" x="80" y="113" font-size="30" font-weight="700" text-anchor="middle">Tag 3</text>
+  <text id="unit" x="80" y="132" font-size="12" text-anchor="middle">Periode läuft</text>
+</g>
+</svg>

@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="340" height="250" viewBox="0 0 340 250">
+<g id="widget-large-autumn-light" transform="translate(0 0)" font-family="Roboto, 'Helvetica Neue', Arial, sans-serif" fill="#3A1406">
+  <clipPath id="clip-large-autumn-light-0-0"><rect width="340" height="250" rx="28"/></clipPath>
+  <rect id="background" width="340" height="250" rx="28" fill="#F0DDCC"/>
+  <g id="illustration" clip-path="url(#clip-large-autumn-light-0-0)">
+    <g transform="translate(232 12) scale(1.4)">
+      <g transform="translate(24 32) rotate(-28) scale(1)">
+        <path d="M0 -22 C15 -12 15 12 0 22 C-15 12 -15 -12 0 -22 Z" fill="#8B5A2B"/>
+        <path d="M0 -14 V30" stroke="#F0DDCC" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+      </g>
+      <g transform="translate(45 24) rotate(38) scale(.7)">
+        <path d="M0 -22 C15 -12 15 12 0 22 C-15 12 -15 -12 0 -22 Z" fill="#B07A45"/>
+        <path d="M0 -14 V30" stroke="#F0DDCC" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+      </g>
+      <g transform="translate(42 48) rotate(105) scale(.55)">
+        <path d="M0 -22 C15 -12 15 12 0 22 C-15 12 -15 -12 0 -22 Z" fill="#6F4524"/>
+        <path d="M0 -14 V30" stroke="#F0DDCC" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+      </g>
+    </g>
+  </g>
+  <text id="title" x="20" y="104" font-size="15">Herbst · Tag 22</text>
+  <text id="headline" x="20" y="140" font-size="32" font-weight="700">in 4–10 Tagen</text>
+  <text id="sub" x="20" y="159" font-size="14">nächste Periode</text>
+  <text id="window" x="20" y="177" font-size="13">voraussichtlich 9.–15. November</text>
+  <g id="year-bar">
+    <clipPath id="bar-autumn-light-0-0"><rect x="20" y="203" width="300" height="16" rx="8"/></clipPath>
+    <g clip-path="url(#bar-autumn-light-0-0)">
+      <rect id="winter" x="20" y="203" width="53.6" height="16" fill="#3B5F8C"/>
+      <rect id="spring" x="73.6" y="203" width="85.7" height="16" fill="#3D6A3A"/>
+      <rect id="summer" x="159.3" y="203" width="32.1" height="16" fill="#7A5B0F"/>
+      <rect id="autumn" x="191.4" y="203" width="128.6" height="16" fill="#9B4A28"/>
+    </g>
+    <circle id="today-ring" cx="250.4" cy="211" r="9" fill="#F0DDCC"/>
+    <circle id="today" cx="250.4" cy="211" r="6" fill="#3A1406"/>
+  </g>
+</g>
+</svg>

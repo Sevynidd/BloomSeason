@@ -11,6 +11,24 @@ SVG-Vorlagen der drei Widgets zum Import in FigCraft oder ein anderes Figma-ähn
 
 Alle Entwürfe zeigen den Frühling mit Beispieltexten. Die Jahreszeit ändert nur die Farben.
 
+## Jahreszeiten-Motive
+
+Im Ordner `seasons/` hat jede Jahreszeit ein eigenes Motiv in der Ecke oben rechts, minimalistisch und flächig in der `accent`-Farbe der Jahreszeit:
+
+| Jahreszeit | Motiv |
+|---|---|
+| Frühling | Blume mit fünf Blütenblättern, Stiel und zwei Blättern |
+| Sommer | Sonne mit acht Strahlen |
+| Herbst | Drei braune Blätter (hell `8B5A2B` / `B07A45` / `6F4524`, dunkel `D2A06F` / `B9835A` / `E6BC91`) |
+| Winter | Große und kleine Schneeflocke, zwei Punkte |
+
+| Datei | Inhalt |
+|---|---|
+| `seasons/seasons-overview.svg` | Alle vier Jahreszeiten, kompakt, standard und groß, hell und dunkel |
+| `seasons/widget-{compact,medium,large}-{spring,summer,autumn,winter}-{light,dark}.svg` | Einzelne Entwürfe (24 Dateien) |
+
+Das Motiv liegt in der Ebene `illustration` und ist am Widget-Rand abgeschnitten. Es sitzt oben rechts, bei kompakt 106/8 (Faktor 0,7), standard 168/8 (1,1), groß 232/12 (1,4), die Grundfläche ist 64 × 64. Der Text wurde nach unten gerückt, damit er das Motiv nicht berührt.
+
 ## Maße und Abstände
 
 | Widget | Größe | Innenabstand | Ausrichtung |

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="250" height="160" viewBox="0 0 250 160">
+<g id="widget-medium-autumn-light" transform="translate(0 0)" font-family="Roboto, 'Helvetica Neue', Arial, sans-serif" fill="#3A1406">
+  <clipPath id="clip-medium-autumn-light-0-0"><rect width="250" height="160" rx="28"/></clipPath>
+  <rect id="background" width="250" height="160" rx="28" fill="#F0DDCC"/>
+  <g id="illustration" clip-path="url(#clip-medium-autumn-light-0-0)">
+    <g transform="translate(168 8) scale(1.1)">
+      <g transform="translate(24 32) rotate(-28) scale(1)">
+        <path d="M0 -22 C15 -12 15 12 0 22 C-15 12 -15 -12 0 -22 Z" fill="#8B5A2B"/>
+        <path d="M0 -14 V30" stroke="#F0DDCC" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+      </g>
+      <g transform="translate(45 24) rotate(38) scale(.7)">
+        <path d="M0 -22 C15 -12 15 12 0 22 C-15 12 -15 -12 0 -22 Z" fill="#B07A45"/>
+        <path d="M0 -14 V30" stroke="#F0DDCC" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+      </g>
+      <g transform="translate(42 48) rotate(105) scale(.55)">
+        <path d="M0 -22 C15 -12 15 12 0 22 C-15 12 -15 -12 0 -22 Z" fill="#6F4524"/>
+        <path d="M0 -14 V30" stroke="#F0DDCC" stroke-width="1.6" stroke-linecap="round" fill="none"/>
+      </g>
+    </g>
+  </g>
+  <text id="title" x="16" y="100" font-size="14">Herbst · Tag 22</text>
+  <text id="headline" x="16" y="128" font-size="24" font-weight="700">in 4–10 Tagen</text>
+  <text id="sub" x="16" y="146" font-size="13">nächste Periode</text>
+</g>
+</svg>

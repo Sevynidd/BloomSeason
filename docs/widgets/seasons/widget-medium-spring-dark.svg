@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="250" height="160" viewBox="0 0 250 160">
+<g id="widget-medium-spring-dark" transform="translate(0 0)" font-family="Roboto, 'Helvetica Neue', Arial, sans-serif" fill="#CDEBC4">
+  <clipPath id="clip-medium-spring-dark-0-0"><rect width="250" height="160" rx="28"/></clipPath>
+  <rect id="background" width="250" height="160" rx="28" fill="#24392A"/>
+  <g id="illustration" clip-path="url(#clip-medium-spring-dark-0-0)">
+    <g transform="translate(168 8) scale(1.1)">
+      <path d="M32 30 V60" stroke="#A6D49B" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <path d="M32 52 C23 52 19 46 19 41 C27 41 32 45 32 52 Z" fill="#A6D49B" opacity=".7"/>
+      <path d="M32 46 C41 46 45 40 45 35 C37 35 32 39 32 46 Z" fill="#A6D49B" opacity=".7"/>
+      <ellipse cx="32" cy="11" rx="6" ry="10" transform="rotate(0 32 22)" fill="#A6D49B" opacity=".92"/>
+      <ellipse cx="32" cy="11" rx="6" ry="10" transform="rotate(72 32 22)" fill="#A6D49B" opacity=".92"/>
+      <ellipse cx="32" cy="11" rx="6" ry="10" transform="rotate(144 32 22)" fill="#A6D49B" opacity=".92"/>
+      <ellipse cx="32" cy="11" rx="6" ry="10" transform="rotate(216 32 22)" fill="#A6D49B" opacity=".92"/>
+      <ellipse cx="32" cy="11" rx="6" ry="10" transform="rotate(288 32 22)" fill="#A6D49B" opacity=".92"/>
+      <circle cx="32" cy="22" r="4.5" fill="#24392A"/>
+    </g>
+  </g>
+  <text id="title" x="16" y="100" font-size="14">Frühling · Tag 7</text>
+  <text id="headline" x="16" y="128" font-size="24" font-weight="700">in 18–26 Tagen</text>
+  <text id="sub" x="16" y="146" font-size="13">nächste Periode</text>
+</g>
+</svg>

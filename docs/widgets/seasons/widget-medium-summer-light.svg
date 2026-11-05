@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="250" height="160" viewBox="0 0 250 160">
+<g id="widget-medium-summer-light" transform="translate(0 0)" font-family="Roboto, 'Helvetica Neue', Arial, sans-serif" fill="#2E2100">
+  <clipPath id="clip-medium-summer-light-0-0"><rect width="250" height="160" rx="28"/></clipPath>
+  <rect id="background" width="250" height="160" rx="28" fill="#F4E3B8"/>
+  <g id="illustration" clip-path="url(#clip-medium-summer-light-0-0)">
+    <g transform="translate(168 8) scale(1.1)">
+      <circle cx="32" cy="32" r="11" fill="#7A5B0F"/>
+      <line x1="32" y1="9" x2="32" y2="15" transform="rotate(0 32 32)" stroke="#7A5B0F" stroke-width="3" stroke-linecap="round"/>
+      <line x1="32" y1="9" x2="32" y2="15" transform="rotate(45 32 32)" stroke="#7A5B0F" stroke-width="3" stroke-linecap="round"/>
+      <line x1="32" y1="9" x2="32" y2="15" transform="rotate(90 32 32)" stroke="#7A5B0F" stroke-width="3" stroke-linecap="round"/>
+      <line x1="32" y1="9" x2="32" y2="15" transform="rotate(135 32 32)" stroke="#7A5B0F" stroke-width="3" stroke-linecap="round"/>
+      <line x1="32" y1="9" x2="32" y2="15" transform="rotate(180 32 32)" stroke="#7A5B0F" stroke-width="3" stroke-linecap="round"/>
+      <line x1="32" y1="9" x2="32" y2="15" transform="rotate(225 32 32)" stroke="#7A5B0F" stroke-width="3" stroke-linecap="round"/>
+      <line x1="32" y1="9" x2="32" y2="15" transform="rotate(270 32 32)" stroke="#7A5B0F" stroke-width="3" stroke-linecap="round"/>
+      <line x1="32" y1="9" x2="32" y2="15" transform="rotate(315 32 32)" stroke="#7A5B0F" stroke-width="3" stroke-linecap="round"/>
+    </g>
+  </g>
+  <text id="title" x="16" y="100" font-size="14">Sommer · Tag 15</text>
+  <text id="headline" x="16" y="128" font-size="24" font-weight="700">in 10–18 Tagen</text>
+  <text id="sub" x="16" y="146" font-size="13">nächste Periode</text>
+</g>
+</svg>

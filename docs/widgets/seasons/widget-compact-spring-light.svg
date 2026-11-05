@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">
+<g id="widget-compact-spring-light" transform="translate(0 0)" font-family="Roboto, 'Helvetica Neue', Arial, sans-serif" fill="#11290F">
+  <clipPath id="clip-compact-spring-light-0-0"><rect width="160" height="160" rx="28"/></clipPath>
+  <rect id="background" width="160" height="160" rx="28" fill="#D6EACD"/>
+  <g id="illustration" clip-path="url(#clip-compact-spring-light-0-0)">
+    <g transform="translate(106 8) scale(.7)">
+      <path d="M32 30 V60" stroke="#3D6A3A" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <path d="M32 52 C23 52 19 46 19 41 C27 41 32 45 32 52 Z" fill="#3D6A3A" opacity=".7"/>
+      <path d="M32 46 C41 46 45 40 45 35 C37 35 32 39 32 46 Z" fill="#3D6A3A" opacity=".7"/>
+      <ellipse cx="32" cy="11" rx="6" ry="10" transform="rotate(0 32 22)" fill="#3D6A3A" opacity=".92"/>
+      <ellipse cx="32" cy="11" rx="6" ry="10" transform="rotate(72 32 22)" fill="#3D6A3A" opacity=".92"/>
+      <ellipse cx="32" cy="11" rx="6" ry="10" transform="rotate(144 32 22)" fill="#3D6A3A" opacity=".92"/>
+      <ellipse cx="32" cy="11" rx="6" ry="10" transform="rotate(216 32 22)" fill="#3D6A3A" opacity=".92"/>
+      <ellipse cx="32" cy="11" rx="6" ry="10" transform="rotate(288 32 22)" fill="#3D6A3A" opacity=".92"/>
+      <circle cx="32" cy="22" r="4.5" fill="#D6EACD"/>
+    </g>
+  </g>
+  <text id="season" x="80" y="79" font-size="13" text-anchor="middle">Frühling</text>
+  <text id="number" x="80" y="113" font-size="30" font-weight="700" text-anchor="middle">18–26</text>
+  <text id="unit" x="80" y="132" font-size="12" text-anchor="middle">Tage bis zur Periode</text>
+</g>
+</svg>
