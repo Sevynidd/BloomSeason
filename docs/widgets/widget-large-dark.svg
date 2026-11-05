@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="340" height="250" viewBox="0 0 340 250">
+<g id="widget-large-dark-spring" transform="translate(0 0)" font-family="Roboto, 'Helvetica Neue', Arial, sans-serif" fill="#CDEBC4">
+  <rect id="background" width="340" height="250" rx="28" fill="#24392A"/>
+  <text id="title" x="20" y="79" font-size="15">Frühling · Tag 7</text>
+  <text id="headline" x="20" y="116" font-size="32" font-weight="700">in 18–26 Tagen</text>
+  <text id="sub" x="20" y="135" font-size="14">nächste Periode</text>
+  <text id="window" x="20" y="153" font-size="13">voraussichtlich 21.–29. November</text>
+  <g id="year-bar">
+    <clipPath id="bar-clip-dark-spring"><rect x="20" y="167" width="300" height="16" rx="8"/></clipPath>
+    <g clip-path="url(#bar-clip-dark-spring)">
+      <rect id="winter" x="20" y="167" width="53.6" height="16" fill="#A9C4E6"/>
+      <rect id="spring" x="73.6" y="167" width="85.7" height="16" fill="#A6D49B"/>
+      <rect id="summer" x="159.3" y="167" width="32.1" height="16" fill="#E8C677"/>
+      <rect id="autumn" x="191.4" y="167" width="128.6" height="16" fill="#EBA484"/>
+    </g>
+    <circle id="today-ring" cx="90" cy="175" r="9" fill="#24392A"/>
+    <circle id="today" cx="90" cy="175" r="6" fill="#CDEBC4"/>
+  </g>
+</g>
+</svg>

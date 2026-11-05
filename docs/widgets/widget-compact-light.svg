@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">
+<g id="widget-compact-light-spring" transform="translate(0 0)" font-family="Roboto, 'Helvetica Neue', Arial, sans-serif" fill="#11290F">
+  <rect id="background" width="160" height="160" rx="28" fill="#D6EACD"/>
+  <text id="season" x="80" y="59" font-size="13" text-anchor="middle">Frühling</text>
+  <text id="number" x="80" y="96" font-size="30" font-weight="700" text-anchor="middle">18–26</text>
+  <text id="unit" x="80" y="115" font-size="12" text-anchor="middle">Tage bis zur Periode</text>
+</g>
+</svg>

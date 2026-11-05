@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="960" viewBox="0 0 1160 960" font-family="Roboto, 'Helvetica Neue', Arial, sans-serif">
+<rect id="page-light" width="580" height="960" fill="#F5F1EB"/>
+<rect id="page-dark" x="580" width="580" height="960" fill="#121110"/>
+<text x="40" y="44" font-size="18" font-weight="700" fill="#1E1B18">Hell</text>
+<text x="620" y="44" font-size="18" font-weight="700" fill="#ECE7E1">Dunkel</text>
+<g id="widget-compact-light-spring" transform="translate(40 70)" font-family="Roboto, 'Helvetica Neue', Arial, sans-serif" fill="#11290F">
+  <rect id="background" width="160" height="160" rx="28" fill="#D6EACD"/>
+  <text id="season" x="80" y="59" font-size="13" text-anchor="middle">Frühling</text>
+  <text id="number" x="80" y="96" font-size="30" font-weight="700" text-anchor="middle">18–26</text>
+  <text id="unit" x="80" y="115" font-size="12" text-anchor="middle">Tage bis zur Periode</text>
+</g>
+<g id="widget-medium-light-spring" transform="translate(230 70)" font-family="Roboto, 'Helvetica Neue', Arial, sans-serif" fill="#11290F">
+  <rect id="background" width="250" height="160" rx="28" fill="#D6EACD"/>
+  <text id="title" x="16" y="62" font-size="14">Frühling · Tag 7</text>
+  <text id="headline" x="16" y="92" font-size="24" font-weight="700">in 18–26 Tagen</text>
+  <text id="sub" x="16" y="111" font-size="13">nächste Periode</text>
+</g>
+<g id="widget-large-light-spring" transform="translate(40 260)" font-family="Roboto, 'Helvetica Neue', Arial, sans-serif" fill="#11290F">
+  <rect id="background" width="340" height="250" rx="28" fill="#D6EACD"/>
+  <text id="title" x="20" y="79" font-size="15">Frühling · Tag 7</text>
+  <text id="headline" x="20" y="116" font-size="32" font-weight="700">in 18–26 Tagen</text>
+  <text id="sub" x="20" y="135" font-size="14">nächste Periode</text>
+  <text id="window" x="20" y="153" font-size="13">voraussichtlich 21.–29. November</text>
+  <g id="year-bar">
+    <clipPath id="bar-clip-light-spring"><rect x="20" y="167" width="300" height="16" rx="8"/></clipPath>
+    <g clip-path="url(#bar-clip-light-spring)">
+      <rect id="winter" x="20" y="167" width="53.6" height="16" fill="#3B5F8C"/>
+      <rect id="spring" x="73.6" y="167" width="85.7" height="16" fill="#3D6A3A"/>
+      <rect id="summer" x="159.3" y="167" width="32.1" height="16" fill="#7A5B0F"/>
+      <rect id="autumn" x="191.4" y="167" width="128.6" height="16" fill="#9B4A28"/>
+    </g>
+    <circle id="today-ring" cx="90" cy="175" r="9" fill="#D6EACD"/>
+    <circle id="today" cx="90" cy="175" r="6" fill="#11290F"/>
+  </g>
+</g>
+<g id="widget-compact-light-winter" transform="translate(40 540)" font-family="Roboto, 'Helvetica Neue', Arial, sans-serif" fill="#142D4A">
+  <rect id="background" width="160" height="160" rx="28" fill="#D8E4F3"/>
+  <text id="season" x="80" y="59" font-size="13" text-anchor="middle">Winter</text>
+  <text id="number" x="80" y="96" font-size="30" font-weight="700" text-anchor="middle">18–26</text>
+  <text id="unit" x="80" y="115" font-size="12" text-anchor="middle">Tage bis zur Periode</text>
+</g>
+<g id="widget-compact-light-spring" transform="translate(210 540)" font-family="Roboto, 'Helvetica Neue', Arial, sans-serif" fill="#11290F">
+  <rect id="background" width="160" height="160" rx="28" fill="#D6EACD"/>
+  <text id="season" x="80" y="59" font-size="13" text-anchor="middle">Frühling</text>
+  <text id="number" x="80" y="96" font-size="30" font-weight="700" text-anchor="middle">18–26</text>
+  <text id="unit" x="80" y="115" font-size="12" text-anchor="middle">Tage bis zur Periode</text>
+</g>
+<g id="widget-compact-light-summer" transform="translate(40 710)" font-family="Roboto, 'Helvetica Neue', Arial, sans-serif" fill="#2E2100">
+  <rect id="background" width="160" height="160" rx="28" fill="#F4E3B8"/>
+  <text id="season" x="80" y="59" font-size="13" text-anchor="middle">Sommer</text>
+  <text id="number" x="80" y="96" font-size="30" font-weight="700" text-anchor="middle">18–26</text>
+  <text id="unit" x="80" y="115" font-size="12" text-anchor="middle">Tage bis zur Periode</text>
+</g>
+<g id="widget-compact-light-autumn" transform="translate(210 710)" font-family="Roboto, 'Helvetica Neue', Arial, sans-serif" fill="#3A1406">
+  <rect id="background" width="160" height="160" rx="28" fill="#F0DDCC"/>
+  <text id="season" x="80" y="59" font-size="13" text-anchor="middle">Herbst</text>
+  <text id="number" x="80" y="96" font-size="30" font-weight="700" text-anchor="middle">18–26</text>
+  <text id="unit" x="80" y="115" font-size="12" text-anchor="middle">Tage bis zur Periode</text>
+</g>
+<g id="widget-compact-dark-spring" transform="translate(620 70)" font-family="Roboto, 'Helvetica Neue', Arial, sans-serif" fill="#CDEBC4">
+  <rect id="background" width="160" height="160" rx="28" fill="#24392A"/>
+  <text id="season" x="80" y="59" font-size="13" text-anchor="middle">Frühling</text>
+  <text id="number" x="80" y="96" font-size="30" font-weight="700" text-anchor="middle">18–26</text>
+  <text id="unit" x="80" y="115" font-size="12" text-anchor="middle">Tage bis zur Periode</text>
+</g>
+<g id="widget-medium-dark-spring" transform="translate(810 70)" font-family="Roboto, 'Helvetica Neue', Arial, sans-serif" fill="#CDEBC4">
+  <rect id="background" width="250" height="160" rx="28" fill="#24392A"/>
+  <text id="title" x="16" y="62" font-size="14">Frühling · Tag 7</text>
+  <text id="headline" x="16" y="92" font-size="24" font-weight="700">in 18–26 Tagen</text>
+  <text id="sub" x="16" y="111" font-size="13">nächste Periode</text>
+</g>
+<g id="widget-large-dark-spring" transform="translate(620 260)" font-family="Roboto, 'Helvetica Neue', Arial, sans-serif" fill="#CDEBC4">
+  <rect id="background" width="340" height="250" rx="28" fill="#24392A"/>
+  <text id="title" x="20" y="79" font-size="15">Frühling · Tag 7</text>
+  <text id="headline" x="20" y="116" font-size="32" font-weight="700">in 18–26 Tagen</text>
+  <text id="sub" x="20" y="135" font-size="14">nächste Periode</text>
+  <text id="window" x="20" y="153" font-size="13">voraussichtlich 21.–29. November</text>
+  <g id="year-bar">
+    <clipPath id="bar-clip-dark-spring"><rect x="20" y="167" width="300" height="16" rx="8"/></clipPath>
+    <g clip-path="url(#bar-clip-dark-spring)">
+      <rect id="winter" x="20" y="167" width="53.6" height="16" fill="#A9C4E6"/>
+      <rect id="spring" x="73.6" y="167" width="85.7" height="16" fill="#A6D49B"/>
+      <rect id="summer" x="159.3" y="167" width="32.1" height="16" fill="#E8C677"/>
+      <rect id="autumn" x="191.4" y="167" width="128.6" height="16" fill="#EBA484"/>
+    </g>
+    <circle id="today-ring" cx="90" cy="175" r="9" fill="#24392A"/>
+    <circle id="today" cx="90" cy="175" r="6" fill="#CDEBC4"/>
+  </g>
+</g>
+<g id="widget-compact-dark-winter" transform="translate(620 540)" font-family="Roboto, 'Helvetica Neue', Arial, sans-serif" fill="#D6E3F7">
+  <rect id="background" width="160" height="160" rx="28" fill="#23324A"/>
+  <text id="season" x="80" y="59" font-size="13" text-anchor="middle">Winter</text>
+  <text id="number" x="80" y="96" font-size="30" font-weight="700" text-anchor="middle">18–26</text>
+  <text id="unit" x="80" y="115" font-size="12" text-anchor="middle">Tage bis zur Periode</text>
+</g>
+<g id="widget-compact-dark-spring" transform="translate(790 540)" font-family="Roboto, 'Helvetica Neue', Arial, sans-serif" fill="#CDEBC4">
+  <rect id="background" width="160" height="160" rx="28" fill="#24392A"/>
+  <text id="season" x="80" y="59" font-size="13" text-anchor="middle">Frühling</text>
+  <text id="number" x="80" y="96" font-size="30" font-weight="700" text-anchor="middle">18–26</text>
+  <text id="unit" x="80" y="115" font-size="12" text-anchor="middle">Tage bis zur Periode</text>
+</g>
+<g id="widget-compact-dark-summer" transform="translate(620 710)" font-family="Roboto, 'Helvetica Neue', Arial, sans-serif" fill="#F6E2B4">
+  <rect id="background" width="160" height="160" rx="28" fill="#3E3119"/>
+  <text id="season" x="80" y="59" font-size="13" text-anchor="middle">Sommer</text>
+  <text id="number" x="80" y="96" font-size="30" font-weight="700" text-anchor="middle">18–26</text>
+  <text id="unit" x="80" y="115" font-size="12" text-anchor="middle">Tage bis zur Periode</text>
+</g>
+<g id="widget-compact-dark-autumn" transform="translate(790 710)" font-family="Roboto, 'Helvetica Neue', Arial, sans-serif" fill="#F8D5C5">
+  <rect id="background" width="160" height="160" rx="28" fill="#47291C"/>
+  <text id="season" x="80" y="59" font-size="13" text-anchor="middle">Herbst</text>
+  <text id="number" x="80" y="96" font-size="30" font-weight="700" text-anchor="middle">18–26</text>
+  <text id="unit" x="80" y="115" font-size="12" text-anchor="middle">Tage bis zur Periode</text>
+</g>
+</svg>
