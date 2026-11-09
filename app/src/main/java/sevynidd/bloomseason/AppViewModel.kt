@@ -131,6 +131,13 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             val epochDay = date.toEpochDay()
             val day = bleeding.takeIf { it != Bleeding.NONE }?.let { DayEntryEntity(epochDay, it.level) }
             dao.saveDay(day, epochDay, pain.map { (location, intensity) -> PainEntryEntity(epochDay, location, intensity) })
+            // Ein Tag ohne Blutung oder nur mit Schmierblutung mitten in einer Periode beendet sie: spätere Blutungstage entfallen.
+            if (!bleeding.isPeriodDay) {
+                val period = current.model.periods.firstOrNull { date > it.start && date <= it.end }
+                if (period != null && date.isBefore(period.end)) {
+                    dao.deleteBleeding(date.plusDays(1).toEpochDay(), period.end.toEpochDay(), Bleeding.LIGHT.level)
+                }
+            }
             // Beginnt hier rückwirkend eine neue Periode, werden die folgenden Tage in üblicher Länge vorbelegt.
             val newStart = bleeding.isPeriodDay && date.isBefore(current.today) &&
                 current.bleeding[date]?.isPeriodDay != true && current.bleeding[date.minusDays(1)]?.isPeriodDay != true
